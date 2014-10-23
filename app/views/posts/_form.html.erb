@@ -1,0 +1,66 @@
+<div class="form-wrapper">
+
+    <%= form_for(@post, html: { class:'form-horizontal'}) do |f| %>
+      <% if @post.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
+
+          <ul>
+          <% @post.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :title, :class => 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :title, :class => 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :content, :class => 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%=f.text_area :content, :class => 'tinymce' %>
+          <%=tinymce%>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Dates:</label>
+        <div class="col-sm-10">
+          <table>
+            <tr>
+              <td><%= f.label :date_from %>&nbsp;&nbsp;</td>
+              <td><%= f.text_field :date_from, :class => 'form-control', :data => { :provide => 'datepicker' } %></td>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td><%= f.label :date_to %>&nbsp;&nbsp;</td>
+              <td><%= f.text_field :date_to, :class => 'form-control', :data => { :provide => 'datepicker' } %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Tags:</label>
+        <div class="col-sm-10">
+          <textarea class="post-tags-editor" name="tags">aaa,bbbb,ccc</textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-2 control-label"></div>
+        <div class="col-sm-10">
+          <%= f.submit :class => 'btn btn-success btn-lg' %>
+        </div>
+      </div>
+    <% end %>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.datepicker').datepicker();
+    });
+</script>

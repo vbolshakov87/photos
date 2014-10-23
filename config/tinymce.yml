@@ -1,0 +1,9 @@
+toolbar:
+  - styleselect | bold italic | undo redo | image | link | code
+plugins:
+  - image
+  - link
+  - wordcount
+  - paste
+  - code
+fullpage_default_doctype : true
