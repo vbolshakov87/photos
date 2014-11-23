@@ -29,10 +29,10 @@ class PostsController < ApplicationController
   # POST /posts.json
   def create
     @post = Post.new(post_params)
-    save_tags false
 
     respond_to do |format|
       if @post.save
+        save_tags false
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
         format.json { render :show, status: :created, location: @post }
       else
@@ -81,8 +81,8 @@ class PostsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
       postParams = params.require(:post).permit(:title, :content, :date_from, :date_to)
-      postParams[:date_from] = DateTime.strptime(postParams[:date_from], '%d/%m/%Y')
-      postParams[:date_to] = DateTime.strptime(postParams[:date_to], '%d/%m/%Y')
+      postParams[:date_from] = postParams[:date_from].to_s.length > 0 ? DateTime.strptime(postParams[:date_from], '%d/%m/%Y') : nil
+      postParams[:date_to] = postParams[:date_to].to_s.length > 0 ? DateTime.strptime(postParams[:date_to], '%d/%m/%Y') : nil
       return postParams
     end
 
@@ -93,7 +93,7 @@ class PostsController < ApplicationController
         PostTag.delete_all(post_id: @post.id)
       end
       #save new tags
-      if (params[:tags].length)
+      if (params[:tags].length > 0)
         @tags = params[:tags].split(',').uniq
         @tags.each do |tagName|
           tagName = tagName.downcase.strip

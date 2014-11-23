@@ -1,6 +1,7 @@
 <%
-   @post.date_from = @post.date_from.strftime('%d/%m/%Y')
-   @post.date_to = @post.date_to.strftime('%d/%m/%Y')
+   @post.date_from =  @post.date_from.to_s.length > 0 ? @post.date_from.strftime('%d/%m/%Y') : ''
+   @post.date_to = @post.date_to.to_s.length > 0 ? @post.date_to.strftime('%d/%m/%Y') : ''
+   @tagsArr = @tagsArr.to_a.length > 0 ? @tagsArr : []
 %>
 <div class="form-wrapper">
     <%= form_for(@post, html: { class:'form-horizontal'}) do |f| %>
