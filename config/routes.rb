@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  resources :photos
+  get 'photos/forpost/:post', to: 'photos#forpost', as: 'photos_for_post'
+  post 'photos/sort/:post', to: 'photos#sort', as: 'photos_sort'
+
+  resources :tags do
+    collection do
+      get 'forpost'
+    end
+  end
+
   resources :posts
 
   # The priority is based upon order of creation: first created -> highest priority.

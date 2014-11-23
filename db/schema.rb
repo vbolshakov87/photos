@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141019175641) do
+ActiveRecord::Schema.define(version: 20141121181025) do
+
+  create_table "photos", force: true do |t|
+    t.string   "title",              limit: 255
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.string   "image_file_name",    limit: 255
+    t.string   "image_content_type", limit: 255
+    t.integer  "image_file_size",    limit: 4
+    t.datetime "image_updated_at"
+    t.integer  "sort",               limit: 4,   default: 100
+  end
 
   create_table "posts", force: true do |t|
     t.string   "title",      limit: 255,   default: "", null: false
@@ -22,4 +33,31 @@ ActiveRecord::Schema.define(version: 20141019175641) do
     t.datetime "date_to"
   end
 
+  create_table "posts_photos", force: true do |t|
+    t.integer "post_id",  limit: 4, null: false
+    t.integer "photo_id", limit: 4, null: false
+  end
+
+  add_index "posts_photos", ["photo_id"], name: "fk_photo", using: :btree
+  add_index "posts_photos", ["post_id"], name: "fk_post", using: :btree
+
+  create_table "posts_tags", force: true do |t|
+    t.integer "post_id", limit: 4, null: false
+    t.integer "tag_id",  limit: 4, null: false
+  end
+
+  add_index "posts_tags", ["post_id"], name: "fk_post", using: :btree
+  add_index "posts_tags", ["tag_id"], name: "fk_tag", using: :btree
+
+  create_table "tags", force: true do |t|
+    t.string   "title",      limit: 255
+    t.integer  "count",      limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_foreign_key "posts_photos", "photos", name: "posts_photos_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "posts_photos", "posts", name: "posts_photos_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "posts_tags", "posts", name: "posts_tags_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "posts_tags", "tags", name: "posts_tags_ibfk_2", on_update: :cascade, on_delete: :cascade
 end

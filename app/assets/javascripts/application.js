@@ -15,10 +15,23 @@
 //= require turbolinks
 //= require tinymce
 //= require bootstrap-datepicker
+//= require jquery-fileupload
 //= require_tree .
 $(document).ready(function(){
     $('.post-tags-editor').tagEditor({
-
         autocomplete: { 'source': '/tags/forpost', minLength: 2, delay: 0, position: { collision: 'flip' } }
     });
+
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy'
+    });
+
+
+    $('.btn-show-photos').click(function(){
+        $('.bs-example-modal-lg').modal({
+            keyboard : true,
+            backdrop : 'static'
+        })
+    });
+
 });

@@ -21,6 +21,8 @@
         <td>
           <%= link_to 'Show', post,  { :class=>'btn btn-sm btn-info' } %>
           <%= link_to 'Edit', edit_post_path(post), { :class=>'btn btn-sm btn-success' } %>
+          <%= link_to 'Photos', photos_for_post_path({:post=>post.id}), { :class=>'btn btn-sm btn-primary' } %>
+          <%#<button type="button" class="btn btn-sm btn-primary btn-show-photos" data-post="<%=post.id">Photos</button>%>
           <%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-sm btn-danger' %>
         </td>
       </tr>
