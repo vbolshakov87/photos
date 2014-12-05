@@ -3,12 +3,10 @@ Rails.application.routes.draw do
   get 'photos/forpost/:post', to: 'photos#forpost', as: 'photos_for_post'
   post 'photos/sort/:post', to: 'photos#sort', as: 'photos_sort'
 
-  resources :tags do
-    collection do
-      get 'forpost'
-    end
-  end
+  get 'tags/for-post', to: 'tags#for_post', as: 'tags_for_post'
+  resources :tags
 
+  get 'posts/filter', to: 'posts#filter', as: 'posts_filter'
   resources :posts
 
   # The priority is based upon order of creation: first created -> highest priority.

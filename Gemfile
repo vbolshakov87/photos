@@ -45,6 +45,7 @@ group :development, :test do
 end
 
 gem 'tinymce-rails'
+gem 'will_paginate-bootstrap'
 gem 'jquery-fileupload-rails'
 gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails',
     :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'

@@ -1,0 +1,91 @@
+<table class="table table-condensed">
+  <thead>
+  <tr>
+    <th>
+      <a href="#"
+        data-by="id"
+        data-direction="<%=@sort[:id].present? ? @sort[:id] : 'empty'%>"
+        data-new-direction="<%if (!@sort[:id].present?)%>desc<%elsif @sort[:id] == 'asc'%>empty<%else%>asc<%end%>"
+        class="change-sort"
+      >
+          <span>#</span>
+          <span class="glyphicon <%if (!@sort[:id].present?)%>glyphicon-sort<%elsif @sort[:id] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+    <th>
+      <a href="#"
+         data-by="title"
+         data-direction="<%=@sort[:title].present? ? @sort[:title] : 'empty'%>"
+         data-new-direction="<%if (!@sort[:title].present?)%>asc<%elsif @sort[:title] == 'desc'%>empty<%else%>desc<%end%>"
+         class="change-sort"
+      >
+          <span>Title</span>
+          <span class="glyphicon <%if (!@sort[:title].present?)%>glyphicon-sort<%elsif @sort[:title] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+    <th>Tags</th>
+    <th>
+      <a href="#"
+         data-by="date_from"
+         data-direction="<%=@sort[:date_from].present? ? @sort[:date_from] : 'empty'%>"
+         data-new-direction="<%if (!@sort[:date_from].present?)%>desc<%elsif @sort[:date_from] == 'asc'%>empty<%else%>asc<%end%>"
+         class="change-sort"
+      >
+          <span>Dates</span>
+        <span class="glyphicon <%if (!@sort[:date_from].present?)%>glyphicon-sort<%elsif @sort[:date_from] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+    <th>
+      <a href="#"
+         data-by="count"
+         data-direction="<%=@sort[:count].present? ? @sort[:count] : 'empty'%>"
+         data-new-direction="<%if (!@sort[:count].present?)%>desc<%elsif @sort[:count] == 'asc'%>empty<%else%>asc<%end%>"
+         class="change-sort"
+      >
+          <span>Count</span>
+          <span class="glyphicon <%if (!@sort[:count].present?)%>glyphicon-sort<%elsif @sort[:count] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @posts.each do |post|
+    date_from =  post.date_from.to_s.length > 0 ? post.date_from.strftime('%d/%m/%Y') : 'not set'
+    date_to = post.date_to.to_s.length > 0 ? post.date_to.strftime('%d/%m/%Y') : 'not set'
+  %>
+      <tr>
+        <td><%= post.id %></td>
+        <td><%= post.title %></td>
+        <td>
+          <%post.tags.each do |tag|%>
+              <%= link_to tag.title, posts_path({:tags => tag.title}), {:class=>'label label-primary'}%>
+          <%end%>
+        </td>
+        <td><%=date_from%>&nbsp;&mdash;&nbsp;<%=date_to%></td>
+        <td></td>
+        <td>
+          <%= link_to 'Show', post,  { :class=>'btn btn-sm btn-info' } %>
+          <%= link_to 'Edit', edit_post_path(post), { :class=>'btn btn-sm btn-success' } %>
+          <%= link_to 'Photos', photos_for_post_path({:post=>post.id}), { :class=>'btn btn-sm btn-primary' } %>
+          <%#<button type="button" class="btn btn-sm btn-primary btn-show-photos" data-post="<%=post.id">Photos</button>%>
+          <%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-sm btn-danger' %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= will_paginate @posts, renderer: BootstrapPagination::Rails, :id => true %>
+<div class="btn-group btn-group-per-page" role="group" data-per-page="<%=@perPage%>">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <%=@perPage%> items on page
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="#">1</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#">10</a></li>
+    <li><a href="#">100</a></li>
+  </ul>
+</div>

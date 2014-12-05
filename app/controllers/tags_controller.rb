@@ -17,22 +17,24 @@ class TagsController < ApplicationController
     @tag = Tag.new
   end
 
-  def forpost
+  def for_post
     term = params[:term]
-    if (!term)
-      @tags = Tag.all
+    maxCount = !params[:maxCount].blank? && params[:maxCount].to_i > 1 ? params[:maxCount].to_i : 10
+    if (term.empty?)
+      @tags = Tag.limit(maxCount).all
     else
-      @tags = Tag.all.where(["title like ?", "%#{term}%"])
+      @tags = Tag.limit(maxCount).all.where(["title like ?", "%#{term}%"])
     end
 
     @tagTitleArr = Array.new
     @tags.each do |tag|
-      #count = PostTag.where("tag_id = ?", tag.id).count
       @tagTitleArr.push(tag.title)
-      #@tagTitleArr.push(count)
     end
     render :json => @tagTitleArr
   end
+
+
+
 
   # GET /tags/1/edit
   def edit

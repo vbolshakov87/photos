@@ -43,3 +43,22 @@ body {
 .tinymce {
     height: 400px;
 }
+.to-toggle {
+    cursor: pointer;
+    color: #337ab7;
+    border-bottom: 1px dashed #337ab7;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.to-toggle:hover {
+    color: #23527c;
+    border: none;
+    text-decoration: none;
+}
+.btn-group-per-page {
+    vertical-align: top;
+    margin-top: 20px;
+    margin-left: 10px;
+}
