@@ -26,24 +26,24 @@
     <th>Tags</th>
     <th>
       <a href="#"
+         data-by="count_photos"
+         data-direction="<%=@sort[:count_photos].present? ? @sort[:count_photos] : 'empty'%>"
+         data-new-direction="<%if (!@sort[:count_photos].present?)%>desc<%elsif @sort[:count_photos] == 'asc'%>empty<%else%>asc<%end%>"
+         class="change-sort"
+      >
+          <span>Count</span>
+          <span class="glyphicon <%if (!@sort[:count_photos].present?)%>glyphicon-sort<%elsif @sort[:count_photos] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+    <th>
+      <a href="#"
          data-by="date_from"
          data-direction="<%=@sort[:date_from].present? ? @sort[:date_from] : 'empty'%>"
          data-new-direction="<%if (!@sort[:date_from].present?)%>desc<%elsif @sort[:date_from] == 'asc'%>empty<%else%>asc<%end%>"
          class="change-sort"
       >
-          <span>Dates</span>
+        <span>Dates</span>
         <span class="glyphicon <%if (!@sort[:date_from].present?)%>glyphicon-sort<%elsif @sort[:date_from] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
-      </a>
-    </th>
-    <th>
-      <a href="#"
-         data-by="count"
-         data-direction="<%=@sort[:count].present? ? @sort[:count] : 'empty'%>"
-         data-new-direction="<%if (!@sort[:count].present?)%>desc<%elsif @sort[:count] == 'asc'%>empty<%else%>asc<%end%>"
-         class="change-sort"
-      >
-          <span>Count</span>
-          <span class="glyphicon <%if (!@sort[:count].present?)%>glyphicon-sort<%elsif @sort[:count] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
       </a>
     </th>
     <th>Actions</th>
@@ -63,8 +63,8 @@
               <%= link_to tag.title, posts_path({:tags => tag.title}), {:class=>'label label-primary'}%>
           <%end%>
         </td>
+        <td><%=post.count_photos%></td>
         <td><%=date_from%>&nbsp;&mdash;&nbsp;<%=date_to%></td>
-        <td></td>
         <td>
           <%= link_to 'Show', post,  { :class=>'btn btn-sm btn-info' } %>
           <%= link_to 'Edit', edit_post_path(post), { :class=>'btn btn-sm btn-success' } %>

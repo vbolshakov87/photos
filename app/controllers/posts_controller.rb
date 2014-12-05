@@ -128,6 +128,9 @@ class PostsController < ApplicationController
       @sort = params[:sort]
     end
 
+    #counts
+    postRecord = postRecord.select('posts.*, count(posts_photos.photo_id) as count_photos').joins('LEFT JOIN posts_photos ON posts_photos.post_id = posts.id').group('posts.id')
+
     if (params[:filter].present?)
       #by name
       postRecord = postRecord.byName(params[:filter][:name])
