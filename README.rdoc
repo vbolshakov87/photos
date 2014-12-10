@@ -1,4 +1,4 @@
-== Images library
+== Images Archive
 This is a simple Ruby on Rails implementation for the home images library. It is done for the personal use but I will be glad if you start using it for your purposes
 
 Things you may do:
