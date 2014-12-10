@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :photos
+  get 'photos/post-gallery-ajax/:post', to: 'photos#post_gallery_ajax', as: 'photos_post_gallery_ajax'
   get 'photos/forpost/:post', to: 'photos#forpost', as: 'photos_for_post'
   post 'photos/sort/:post', to: 'photos#sort', as: 'photos_sort'
 

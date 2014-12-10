@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141123055011) do
+ActiveRecord::Schema.define(version: 20141206081023) do
 
   create_table "photos", force: true do |t|
     t.string   "title",              limit: 255
@@ -21,7 +21,8 @@ ActiveRecord::Schema.define(version: 20141123055011) do
     t.string   "image_content_type", limit: 255
     t.integer  "image_file_size",    limit: 4
     t.datetime "image_updated_at"
-    t.integer  "sort",               limit: 4,   default: 100
+    t.integer  "sort",               limit: 4,     default: 100
+    t.text     "image_meta",         limit: 65535
   end
 
   create_table "posts", force: true do |t|

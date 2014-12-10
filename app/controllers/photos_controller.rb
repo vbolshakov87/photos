@@ -32,6 +32,16 @@ class PhotosController < ApplicationController
     end
   end
 
+  def post_gallery_ajax
+    postId = params[:post]
+    if (!postId)
+      raise 'there is no post in in input params'
+    end
+
+    @photos = Photo.sortPhotosAsc.fromPost(postId).all
+    render partial: 'post_gallery_ajax', formats: :html
+  end
+
 
   # sort images
   def sort

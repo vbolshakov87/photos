@@ -98,6 +98,8 @@ GEM
       activesupport (>= 3.0.0)
       cocaine (~> 0.5.3)
       mime-types
+    paperclip-meta (1.1.0)
+      paperclip (>= 3.0.2, < 5.0)
     rack (1.6.0.beta)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -181,6 +183,7 @@ DEPENDENCIES
   jquery-rails (~> 4.0.0.beta2)
   mysql2
   paperclip (~> 4.2)
+  paperclip-meta
   rails (= 4.2.0.beta2)
   sass-rails (~> 5.0.0.beta1)
   sdoc (~> 0.4.0)

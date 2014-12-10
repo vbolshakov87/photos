@@ -48,14 +48,16 @@ $(function() {
         })
     });
 
-    $('.to-toggle-filter').click(function(){
+    $('#table-content').updatePostTable();
+
+    $('.btn-show-photos-ajax').click(function(e){
+        e.preventDefault();
         $('.toggle-filter').toggle();
     });
 
-    $('#table-content').updatePostTable();
-
-
-
+    $('.to-toggle-filter').click(function(){
+        $('.toggle-filter').toggle();
+    });
 
 });
 
@@ -72,7 +74,14 @@ $(function() {
             wrapper: $(this),
             pagination :'.pagination:first',
             perPage :'.btn-group-per-page:first .dropdown-menu li',
-            perPageWrapper :'.btn-group-per-page:first'
+            perPageWrapper :'.btn-group-per-page:first',
+            btnShowPhotosAjax :'.btn-show-photos-ajax',
+            popup : {
+                wrapper :   $('.bs-example-modal-lg'),
+                title :     '.modal-title',
+                content :   '.modal-content'
+            },
+            fotoramaClass : 'fotorama'
         }, opts);
 
         var $form = $('#'+config.formId);
@@ -149,7 +158,35 @@ $(function() {
                 e.preventDefault();
                 $(config.perPageWrapper).data('per-page', $(this).text());
                 updatePostTable();
-            });
+            })
+            .on( 'click', config.btnShowPhotosAjax, function(e) {
+                var $this = $(this);
+                e.preventDefault();
+                $.ajax({
+                    url: $(this).prop('href'),
+                    type: 'GET',
+                    dataType : 'html',
+                    success: function( html ) {
+                        var title = 'Photos for ' + $this.closest('tr').find('td:eq(1)').text();
+                        config.popup.wrapper.find(config.popup.content).empty().html(html);
+                        config.popup.wrapper.find(config.popup.title).empty().html(title);
+                        config.popup.wrapper.modal({
+                            keyboard : true,
+                            backdrop : 'static'
+                        }).on('shown.bs.modal', function () {
+                            $('.'+config.fotoramaClass).fotorama();
+                        });
+                    },
+                    error: function( xhr, status, errorThrown ) {
+                        alert( "Sorry, there was a problem!" );
+                        console.log( "Error: " + errorThrown );
+                        console.log( "Status: " + status );
+                        console.dir( xhr );
+                    }
+                });
+
+            })
+        ;
 
 
         return this;

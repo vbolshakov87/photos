@@ -71,6 +71,7 @@
           <%= link_to 'Photos', photos_for_post_path({:post=>post.id}), { :class=>'btn btn-sm btn-primary' } %>
           <%#<button type="button" class="btn btn-sm btn-primary btn-show-photos" data-post="<%=post.id">Photos</button>%>
           <%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-sm btn-danger' %>
+          <%= (post.count_photos > 0) ? (link_to 'Show photos', photos_post_gallery_ajax_path({:post=>post.id}),  { :class=>'btn btn-sm btn-info btn-show-photos-ajax', :data => {:post_id => post.id}  }) : '' %>
         </td>
       </tr>
   <% end %>

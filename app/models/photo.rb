@@ -7,13 +7,17 @@ class Photo < ActiveRecord::Base
 
   has_attached_file :image,
                     :styles => {
+                        :blog => '2000x2000>',
+                        :zoom => '1000x1000>',
                         :medium => '300x300>',
                         :thumb => '100x100>'
                     },
                     :convert_options => {
-                        :medium => "-quality 100",
-                        :thumb => "-quality 100",
-                        :original => "-quality 100"
+                        :blog => '-quality 100',
+                        :zoom => '-quality 100',
+                        :medium => '-quality 100',
+                        :thumb => '-quality 100',
+                        :original => '-quality 100'
                     },
                     :default_url => '/images/:style/missing.png'
   validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
@@ -44,11 +48,6 @@ class Photo < ActiveRecord::Base
   end
 
 
-  def self.bar(a,b)
-    return a*b
-  end
-
-
   def imageFileSize
     helper = Object.new.extend(ActionView::Helpers::NumberHelper)
     helper.number_to_human_size(read_attribute(:image_file_size))
@@ -58,7 +57,7 @@ class Photo < ActiveRecord::Base
   private
   def setTitleBeforeSave
     if (self.title.to_s.length < 1)
-      stops = [".jpeg", ".jpg"]
+      stops = ['.jpeg', '.jpg']
       self.title = self.image_file_name.gsub(Regexp.union(stops), '')
     end
   end
