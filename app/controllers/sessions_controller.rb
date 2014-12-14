@@ -5,11 +5,12 @@ class SessionsController < ApplicationController
   def new
   end
 
+  # login
   def create
     postParams = post_params
     user = User.authenticate(postParams[:email], postParams[:password])
     if user
-      session[:user] = user
+      SessionsHelper.onLogin(user)
       redirect_to root_url, :notice => 'Logged in!'
     else
       flash.now.alert = 'Invalid email or password'
@@ -17,8 +18,9 @@ class SessionsController < ApplicationController
     end
   end
 
+  # logout
   def destroy
-    session[:user] = nil
+    SessionsHelper.onLogOut
     redirect_to root_url, :notice => 'Logged out'
   end
 
