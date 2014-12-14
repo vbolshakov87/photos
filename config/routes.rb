@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   resources :photos
   get 'photos/post-gallery-ajax/:post', to: 'photos#post_gallery_ajax', as: 'photos_post_gallery_ajax'
   get 'photos/forpost/:post', to: 'photos#forpost', as: 'photos_for_post'
@@ -9,6 +10,13 @@ Rails.application.routes.draw do
 
   get 'posts/filter', to: 'posts#filter', as: 'posts_filter'
   resources :posts
+
+  get 'log_out' => 'sessions#destroy', :as => 'log_out'
+  get 'log_in' => 'sessions#new', :as => 'log_in'
+  get 'sign_up' => 'users#new', :as => 'sign_up'
+  root :to => 'posts#index'
+  resources :users
+  resources :sessions
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

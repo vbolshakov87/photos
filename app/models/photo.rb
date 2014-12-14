@@ -26,7 +26,12 @@ class Photo < ActiveRecord::Base
 
   #scope for post
   scope :fromPost, ->(postId) {
-    joins(:post_photo)
+    postId = postId.to_i
+    if (postId > 0)
+      joins(:post_photo).
+      where('posts_photos.post_id = ?', postId)
+    end
+
   }
 
   #scope for sorting photos

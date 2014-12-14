@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141206081023) do
+ActiveRecord::Schema.define(version: 20141211002217) do
+
+  create_table "categories", force: true do |t|
+    t.string   "title",        limit: 255,               null: false
+    t.text     "content",      limit: 65535
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.integer  "posts_count",  limit: 4,     default: 0
+    t.integer  "photos_count", limit: 4,     default: 0
+  end
 
   create_table "photos", force: true do |t|
     t.string   "title",              limit: 255
@@ -23,6 +32,7 @@ ActiveRecord::Schema.define(version: 20141206081023) do
     t.datetime "image_updated_at"
     t.integer  "sort",               limit: 4,     default: 100
     t.text     "image_meta",         limit: 65535
+    t.integer  "main",               limit: 1
   end
 
   create_table "posts", force: true do |t|
@@ -55,6 +65,14 @@ ActiveRecord::Schema.define(version: 20141206081023) do
     t.integer  "count",      limit: 4
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "email",         limit: 255
+    t.string   "password_hash", limit: 255
+    t.string   "password_salt", limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   add_foreign_key "posts_photos", "photos", name: "posts_photos_ibfk_2", on_update: :cascade, on_delete: :cascade

@@ -116,55 +116,54 @@ class PostsController < ApplicationController
     end
 
 
-  def getPostsWithFilter
+    def getPostsWithFilter
 
+      postRecord = Post
 
-    postRecord = Post
-
-    @sort = {
-        :date_from => 'desc'
-    }
-    if (params[:sort].present?)
-      @sort = params[:sort]
-    end
-
-    #counts
-    postRecord = postRecord.select('posts.*, count(posts_photos.photo_id) as count_photos').joins('LEFT JOIN posts_photos ON posts_photos.post_id = posts.id').group('posts.id')
-
-    if (params[:filter].present?)
-      #by name
-      postRecord = postRecord.byName(params[:filter][:name])
-
-      # by tags
-      if (params[:filter].present? && params[:filter][:tags].present?)
-        tags = params[:filter][:tags].split(',').uniq
-        postRecord = postRecord.joins(:tags)
-        postRecord = postRecord.where('tags.title IN (?)', tags)
+      @sort = {
+          :date_from => 'desc'
+      }
+      if (params[:sort].present?)
+        @sort = params[:sort]
       end
 
-      # by dates
-      if (params[:filter][:date_from].to_s.length > 0)
-        postRecord = postRecord.where('posts.date_from >= ?',  DateTime.strptime(params[:filter][:date_from], '%d/%m/%Y'))
+      #counts
+      postRecord = postRecord.select('posts.*, count(posts_photos.photo_id) as count_photos').joins('LEFT JOIN posts_photos ON posts_photos.post_id = posts.id').group('posts.id')
+
+      if (params[:filter].present?)
+        #by name
+        postRecord = postRecord.byName(params[:filter][:name])
+
+        # by tags
+        if (params[:filter].present? && params[:filter][:tags].present?)
+          tags = params[:filter][:tags].split(',').uniq
+          postRecord = postRecord.joins(:tags)
+          postRecord = postRecord.where('tags.title IN (?)', tags)
+        end
+
+        # by dates
+        if (params[:filter][:date_from].to_s.length > 0)
+          postRecord = postRecord.where('posts.date_from >= ?',  DateTime.strptime(params[:filter][:date_from], '%d/%m/%Y'))
+        end
+        if (params[:filter][:date_to].to_s.length > 0)
+          postRecord = postRecord.where('posts.date_to <= ?',  DateTime.strptime(params[:filter][:date_to], '%d/%m/%Y'))
+        end
       end
-      if (params[:filter][:date_to].to_s.length > 0)
-        postRecord = postRecord.where('posts.date_to <= ?',  DateTime.strptime(params[:filter][:date_to], '%d/%m/%Y'))
+
+      @sort.each do |column,direction|
+        postRecord = postRecord.order(column.to_s + ' ' + direction.to_s)
       end
-    end
 
-    @sort.each do |column,direction|
-      postRecord = postRecord.order(column.to_s + ' ' + direction.to_s)
-    end
+      # paging
+      @perPage = 1
+      if (cookies[:per_page].present?)
+        @perPage = cookies[:per_page];
+      end
+      if (params[:per_page].present? && params[:per_page].to_i > 0)
+        @perPage = params[:per_page].to_i;
+      end
+      cookies[:per_page] = { :value => @perPage, :expires => 10.day.from_now }
 
-    # paging
-    @perPage = 1
-    if (cookies[:per_page].present?)
-      @perPage = cookies[:per_page];
+      @posts = postRecord.paginate(:page => params[:page], :per_page => @perPage)
     end
-    if (params[:per_page].present? && params[:per_page].to_i > 0)
-      @perPage = params[:per_page].to_i;
-    end
-    cookies[:per_page] = { :value => @perPage, :expires => 10.day.from_now }
-
-    @posts = postRecord.paginate(:page => params[:page], :per_page => @perPage)
-  end
 end

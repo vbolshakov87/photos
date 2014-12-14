@@ -4,4 +4,20 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   http_basic_authenticate_with name: "admin", password: "admin"
+
+  before_filter :require_login
+
+  helper_method :current_user
+
+  private
+
+  def current_user
+    @current_user ||= session[:user] if session[:user].present?
+  end
+
+  def require_login
+    unless current_user
+      redirect_to log_in_path
+    end
+  end
 end

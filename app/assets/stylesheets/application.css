@@ -27,6 +27,10 @@ body {
     border-width: 1px 0;
     -webkit-box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
     box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
+    overflow: hidden;
+}
+.form-group {
+    overflow: hidden;
 }
 @media (min-width: 768px) {
     .form-wrapper {
@@ -61,4 +65,8 @@ body {
     vertical-align: top;
     margin-top: 20px;
     margin-left: 10px;
+}
+.flash-block {
+    border-radius: 5px;
+    width: 300px;
 }
