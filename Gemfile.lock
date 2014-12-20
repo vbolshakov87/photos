@@ -71,6 +71,7 @@ GEM
     debugger-linecache (1.2.0)
     erubis (2.7.0)
     execjs (2.2.2)
+    flickraw (0.9.8)
     globalid (0.3.0)
       activesupport (>= 4.1.0)
     hike (1.2.3)
@@ -191,6 +192,7 @@ DEPENDENCIES
   bootstrap-datepicker-rails!
   byebug
   coffee-rails (~> 4.0.0)
+  flickraw
   jbuilder (~> 2.0)
   jquery-fileupload-rails
   jquery-rails (~> 4.0.0.beta2)

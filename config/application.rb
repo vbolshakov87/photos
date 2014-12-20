@@ -22,5 +22,9 @@ module Photo2
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+
+    config.flickr_key = '7ddd209f2b76befc1e854b5d34dc6bde'
+    config.flickr_secret = '37c146eda5eac860'
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141211002217) do
+ActiveRecord::Schema.define(version: 20141218013042) do
 
   create_table "categories", force: true do |t|
     t.string   "title",        limit: 255,               null: false
@@ -20,6 +20,18 @@ ActiveRecord::Schema.define(version: 20141211002217) do
     t.datetime "updated_at",                             null: false
     t.integer  "posts_count",  limit: 4,     default: 0
     t.integer  "photos_count", limit: 4,     default: 0
+  end
+
+  create_table "flickr_tokens", force: true do |t|
+    t.string   "oauth_token",        limit: 255, default: "",        null: false
+    t.string   "oauth_token_secret", limit: 255, default: "",        null: false
+    t.string   "auth_url",           limit: 255, default: "",        null: false
+    t.string   "verify_code",        limit: 255
+    t.string   "access_token",       limit: 255
+    t.string   "access_secret",      limit: 255
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.string   "status",             limit: 9,   default: "pending"
   end
 
   create_table "photos", force: true do |t|

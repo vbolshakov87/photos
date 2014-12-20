@@ -1,7 +1,5 @@
 class Photo < ActiveRecord::Base
 
-  CONSTANT_123 = 'foo'
-
  # has_and_belongs_to_many :posts
   has_many :post_photo, class_name: PostPhoto, dependent: :destroy
 

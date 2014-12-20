@@ -56,3 +56,4 @@ end
 
 gem "bcrypt-ruby", :require => "bcrypt"
 gem 'validates_email_format_of'
+gem "flickraw"
