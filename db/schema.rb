@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141218013042) do
+ActiveRecord::Schema.define(version: 20141223014431) do
 
   create_table "categories", force: true do |t|
     t.string   "title",        limit: 255,               null: false
@@ -44,17 +44,32 @@ ActiveRecord::Schema.define(version: 20141218013042) do
     t.datetime "image_updated_at"
     t.integer  "sort",               limit: 4,     default: 100
     t.text     "image_meta",         limit: 65535
-    t.integer  "main",               limit: 1
+    t.float    "geo_latitude",       limit: 24
+    t.float    "geo_longitude",      limit: 24
+    t.text     "content",            limit: 65535
   end
 
+  create_table "photos_tags", force: true do |t|
+    t.integer "photo_id", limit: 4, null: false
+    t.integer "tag_id",   limit: 4, null: false
+  end
+
+  add_index "photos_tags", ["photo_id"], name: "fk_photo", using: :btree
+  add_index "photos_tags", ["tag_id"], name: "fk_tag", using: :btree
+
   create_table "posts", force: true do |t|
-    t.string   "title",      limit: 255,   default: "", null: false
-    t.text     "content",    limit: 65535
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.string   "title",         limit: 255,   default: "", null: false
+    t.text     "content",       limit: 65535
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.datetime "date_from"
     t.datetime "date_to"
+    t.integer  "main_photo",    limit: 4
+    t.float    "geo_latitude",  limit: 24
+    t.float    "geo_longitude", limit: 24
   end
+
+  add_index "posts", ["main_photo"], name: "main_photo", using: :btree
 
   create_table "posts_photos", force: true do |t|
     t.integer "post_id",  limit: 4, null: false
@@ -77,6 +92,7 @@ ActiveRecord::Schema.define(version: 20141218013042) do
     t.integer  "count",      limit: 4
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.string   "type",       limit: 5
   end
 
   create_table "users", force: true do |t|
@@ -87,6 +103,9 @@ ActiveRecord::Schema.define(version: 20141218013042) do
     t.datetime "updated_at",                null: false
   end
 
+  add_foreign_key "photos_tags", "photos", name: "photos_tags_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "photos_tags", "tags", name: "photos_tags_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "posts", "photos", column: "main_photo", name: "posts_ibfk_1", on_update: :cascade, on_delete: :nullify
   add_foreign_key "posts_photos", "photos", name: "posts_photos_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "posts_photos", "posts", name: "posts_photos_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "posts_tags", "posts", name: "posts_tags_ibfk_1", on_update: :cascade, on_delete: :cascade

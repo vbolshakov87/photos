@@ -2,17 +2,21 @@ class Photo < ActiveRecord::Base
 
  # has_and_belongs_to_many :posts
   has_many :post_photo, class_name: PostPhoto, dependent: :destroy
+  has_and_belongs_to_many :tags
+  has_many :photo_tag, class_name: PhotoTag
 
   has_attached_file :image,
                     :styles => {
                         :blog => '2000x2000>',
                         :zoom => '1000x1000>',
+                        :list => '300x300#',
                         :medium => '300x300>',
                         :thumb => '100x100>'
                     },
                     :convert_options => {
                         :blog => '-quality 100',
                         :zoom => '-quality 100',
+                        :list => '-quality 100',
                         :medium => '-quality 100',
                         :thumb => '-quality 100',
                         :original => '-quality 100'
@@ -45,7 +49,9 @@ class Photo < ActiveRecord::Base
         'size' => read_attribute(:image_file_size),
         'url' => image.url(:original),
         'thumbnail_url' => image.url(:thumb),
+        'list_url' => image.url(:list),
         'delete_url' => photo_path(self),
+        'update_url' => photo_popup_path(self),
         'delete_type' => 'DELETE'
     }
   end
@@ -56,6 +62,10 @@ class Photo < ActiveRecord::Base
     helper.number_to_human_size(read_attribute(:image_file_size))
   end
 
+
+  def getGsif
+
+  end
 
   private
   def setTitleBeforeSave
