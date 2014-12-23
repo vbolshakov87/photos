@@ -70,3 +70,62 @@ body {
     border-radius: 5px;
     width: 300px;
 }
+.gllpLatlonPicker {
+    margin: 20px 0;
+}
+.gllpMap {
+    height: 500px;
+    width: 800px;
+}
+.gllpSearchField {
+    width: 200px;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+.gllpSearchButton {
+    vertical-align: top;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+.list-file-upload .caption, .list-file-upload h3 {
+    margin-top: 0;
+}
+.list-file-upload h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.list-file-upload .button-group {
+    margin-top: 5px;
+}
+.list-file-upload .block-inline {
+    display: inline-block;
+    margin-right: 10px;
+}
+.list-file-upload .preview {
+    min-height: 205px;
+    min-width: 245px;
+}
+.ui-state-highlight {
+    border: 4px dashed #1D67A4;
+    width: 265px;
+    height: 360px;
+    float: left;
+}
+.bs-photo-lg .modal-lg {
+    width: 1032px;
+}
+.modal-image-position {
+    text-align: center;
+}
+.modal-body .tab-pane {
+    margin-top: 10px;
+}
+
+.modal-lg .tab-content>.tab-pane {
+    position: absolute;
+    left: -5000px;
+    top: -5000px;
+}
+.modal-lg .tab-content>.active {
+    position: static;
+}

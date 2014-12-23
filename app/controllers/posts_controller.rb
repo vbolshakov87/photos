@@ -86,7 +86,7 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      postParams = params.require(:post).permit(:title, :content, :date_from, :date_to, :filter)
+      postParams = params.require(:post).permit(:title, :content, :date_from, :date_to, :filter, :geo_latitude, :geo_longitude)
       postParams[:date_from] = postParams[:date_from].to_s.length > 0 ? DateTime.strptime(postParams[:date_from], '%d/%m/%Y') : nil
       postParams[:date_to] = postParams[:date_to].to_s.length > 0 ? DateTime.strptime(postParams[:date_to], '%d/%m/%Y') : nil
       return postParams

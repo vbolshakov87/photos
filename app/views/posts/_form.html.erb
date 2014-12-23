@@ -1,14 +1,15 @@
 <%
    @post.date_from =  @post.date_from.to_s.length > 0 ? @post.date_from.strftime('%d/%m/%Y') : ''
    @post.date_to = @post.date_to.to_s.length > 0 ? @post.date_to.strftime('%d/%m/%Y') : ''
+   @post.geo_latitude = @post.geo_latitude.present? ? @post.geo_latitude : 20
+   @post.geo_longitude = @post.geo_longitude.present? ? @post.geo_longitude : 20
    @tagsArr = @tagsArr.to_a.length > 0 ? @tagsArr : []
 %>
 <div class="form-wrapper">
     <%= form_for(@post, html: { class:'form-horizontal'}) do |f| %>
       <% if @post.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
-
+        <div id="error_explanation" class="alert alert-danger">
+          <strong><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</strong>
           <ul>
           <% @post.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -53,6 +54,21 @@
           <textarea class="post-tags-editor" name="tags">
             <%=@tagsArr.join(',')%>
           </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Map:</label>
+        <div class="col-sm-10">
+          <fieldset class="gllpLatlonPicker">
+            <input type="text" class="form-control gllpSearchField">
+            <input type="button" class="btn btn-info gllpSearchButton" value="search">
+            <div class="gllpMap" style="width:500px; height:500px;">Google Maps</div>
+
+            <%= f.hidden_field :geo_latitude, :class => 'gllpLatitude' %>
+            <%= f.hidden_field :geo_longitude, :class => 'gllpLongitude' %>
+            <input type="hidden" class="gllpZoom" value="4"/>
+          </fieldset>
         </div>
       </div>
 

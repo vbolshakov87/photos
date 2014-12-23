@@ -17,6 +17,8 @@
 //= require bootstrap-datepicker
 //= require jquery-fileupload
 //= require_tree .
+
+
 $(function() {
     $('.post-tags-editor').tagEditor({
         autocomplete: {
@@ -58,6 +60,39 @@ $(function() {
     $('.to-toggle-filter').click(function(){
         $('.toggle-filter').toggle();
     });
+
+
+    $('.list-file-upload').on( 'click', '.photo-edit', function(e) {
+        var $this = $(this);
+        e.preventDefault();
+        $.ajax({
+            url: $(this).prop('href'),
+            type: 'GET',
+            dataType : 'html',
+            success: function( html ) {
+                var title = 'Photo';
+                var globalPopup = {
+                    wrapper :   $('.bs-example-modal-lg'),
+                    title :     '.modal-title',
+                    content :   '.modal-content'
+                };
+                globalPopup.wrapper.addClass('bs-photo-lg');
+                globalPopup.wrapper.find(globalPopup.content).empty().html(html);
+                globalPopup.wrapper.find(globalPopup.title).empty().html(title);
+                globalPopup.wrapper.modal({
+                    keyboard : true,
+                    backdrop : 'static'
+                });
+            },
+            error: function( xhr, status, errorThrown ) {
+                alert( "Sorry, there was a problem!" );
+                console.log( "Error: " + errorThrown );
+                console.log( "Status: " + status );
+                console.dir( xhr );
+            }
+        });
+
+    })
 
 });
 
@@ -148,7 +183,7 @@ $(function() {
                 e.preventDefault();
                 $(this).data('to-change', true);
                 updatePostTable();
-        })
+            })
             .on( 'click', config.pagination + ' a', function(e) {
                 e.preventDefault();
                 $(this).data('active-page', $(this).text());
@@ -187,11 +222,7 @@ $(function() {
 
             })
         ;
-
-
         return this;
-
     };
 
 }( jQuery ));
-
