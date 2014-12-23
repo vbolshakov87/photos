@@ -43,6 +43,17 @@ class PhotosController < ApplicationController
   end
 
 
+  def popup
+    photoId = params[:photo]
+    if (!photoId)
+      raise 'there is no post in in input params'
+    end
+
+    @photo = Photo.find(photoId)
+    render partial: 'popup', formats: :html
+  end
+
+
   # sort images
   def sort
     postId = params[:post]
@@ -110,8 +121,25 @@ class PhotosController < ApplicationController
       if @photo.save
         #save new link between photo and post
         if (params[:post_id].length)
+
+          countInPost = PostPhoto.where(post_id: params[:post_id]).count
+          @photo.sort = (countInPost+1)*100
+          @photo.save
+
+          #check post
+          post = Post.find(params[:post_id])
+          if (!post.present?)
+            raise 'Post is not found'
+          end
+
+          if (post.main_photo.to_i < 1)
+            post.main_photo = @photo.id
+            post.save
+          end
+
           @postPhoto = PostPhoto.find_or_initialize_by(post_id: params[:post_id], photo_id: @photo.id)
           @postPhoto.save
+
         end
 
         format.html {
@@ -145,7 +173,18 @@ class PhotosController < ApplicationController
   # DELETE /photos/1
   # DELETE /photos/1.json
   def destroy
+    #remove main photo if necessary
+    post = Post.where(main_photo: @photo.id).first
+    if (post.present?)
+      firstPhoto = Photo.sortPhotosAsc.fromPost(post.id).first
+      if (firstPhoto.present?)
+        post.main_photo = firstPhoto.id
+        post.save
+      end
+    end
+
     @photo.destroy
+
     respond_to do |format|
       format.html { redirect_to photos_url, notice: 'Photo was successfully destroyed.' }
       format.json { head :no_content }
