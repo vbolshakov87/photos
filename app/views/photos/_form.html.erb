@@ -35,7 +35,8 @@
           <fieldset class="gllpLatlonPicker">
             <input type="text" class="form-control gllpSearchField">
             <input type="button" class="btn btn-info gllpSearchButton" value="search">
-            <div class="gllpMap">Google Maps</div>
+            <input type="button" class="btn btn-info gllpSearchResize" value="resize">
+            <div class="gllpMap" style="width: 800px">Google Maps</div>
 
             <%= f.hidden_field :geo_latitude, :class => 'gllpLatitude' %>
             <%= f.hidden_field :geo_longitude, :class => 'gllpLongitude' %>
@@ -49,3 +50,16 @@
     </div>
   <% end %>
 </div>
+<script>
+    var mapIsShown = false;
+    function showMap(){
+        if (mapIsShown === false) {
+            mapIsShown = true;
+            $(document).ready( function() {
+                $("#block-<%=@photo.id%> .gllpLatlonPicker").each(function() {
+                    (new GMapsLatLonPicker()).init( $(this) )
+                });
+            });
+        }
+    }
+</script>

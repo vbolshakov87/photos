@@ -182,7 +182,11 @@ GMapsLatLonPicker = (function() {
 				$(_self.vars.cssID + ".gllpZoom").val( _self.vars.map.getZoom() );
 				$(_self.vars.cssID).trigger("location_changed", $(_self.vars.cssID));
 			});
-            google.maps.event.trigger(_self.vars.map, 'resize');
+
+            setTimeout(function(){
+                google.maps.event.trigger(_self.vars.map, 'resize');
+            }, 1000)
+
 			// Update location and zoom values based on input field's value 
 			$(_self.vars.cssID + ".gllpUpdateButton").bind("click", function() {
 				var lat = $(_self.vars.cssID + ".gllpLatitude").val();
@@ -196,6 +200,12 @@ GMapsLatLonPicker = (function() {
             $('.container').on('click', _self.vars.cssID + ".gllpSearchButton", function(e){
                 e.preventDefault();
                 performSearch( $(_self.vars.cssID + ".gllpSearchField").val(), false );
+            });
+
+            $('.container').on('click', _self.vars.cssID + ".gllpSearchResize", function(e){
+                e.preventDefault();
+
+                google.maps.event.trigger(_self.vars.map, 'resize');
             });
 
 			// Search function by gllp_perform_search listener
@@ -213,11 +223,9 @@ GMapsLatLonPicker = (function() {
 			});
 
 
-            google.maps.event.trigger(_self.vars.map, 'resize');
+            return this;
 		}
-
 	}
-
 
 	return publicfunc;
 });
@@ -228,8 +236,5 @@ $(document).ready( function() {
 	});
 });
 
-$(document).bind("location_changed", function(event, object) {
-	console.log("changed: " + $(object).attr('id') );
-});
 
 }(jQuery));
