@@ -185,6 +185,7 @@ GMapsLatLonPicker = (function() {
 
             setTimeout(function(){
                 google.maps.event.trigger(_self.vars.map, 'resize');
+                setPosition(_self.vars.marker.position);
             }, 1000)
 
 			// Update location and zoom values based on input field's value 
