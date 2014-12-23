@@ -1,17 +1,3 @@
-/**
- * 	
- * A JQUERY GOOGLE MAPS LATITUDE AND LONGITUDE LOCATION PICKER
- * version 1.2
- * 
- * Supports multiple maps. Works on touchscreen. Easy to customize markup and CSS.
- * 
- * To see a live demo, go to:
- * http://www.wimagguc.com/projects/jquery-latitude-longitude-picker-gmaps/
- * 
- * by Richard Dancsi
- * http://www.wimagguc.com/
- * 
- */
 var GMapsLatLonPicker = null;
 (function($) {
 
