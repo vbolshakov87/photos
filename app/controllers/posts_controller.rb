@@ -78,6 +78,32 @@ class PostsController < ApplicationController
     end
   end
 
+
+  def autocomplite
+    term = params[:term]
+    maxCount = !params[:maxCount].blank? && params[:maxCount].to_i > 1 ? params[:maxCount].to_i : 10
+
+    postCriteria = Post.limit(maxCount)
+
+    if (term.empty?)
+      posts = postCriteria.all
+    else
+      posts = postCriteria.byName(term).all
+    end
+
+    postTitleArr = Array.new
+    posts.each do |post|
+      postTitleArr.push(
+          {
+              :label => post.title,
+              :value => ApplicationHelper::Post.post_autocomplite_title(post),
+              :id => post.id
+          }
+      )
+    end
+    render :json => postTitleArr
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
@@ -103,7 +129,7 @@ class PostsController < ApplicationController
         @tags = params[:tags].split(',').uniq
         @tags.each do |tagName|
           tagName = tagName.downcase.strip
-          @tag = Tag.find_or_initialize_by(title: tagName);
+          @tag = Tag.find_or_initialize_by(title: tagName, for: Tag::TYPE_POST)
           if (@tag.save)
             #save linked table
             @postTag = PostTag.find_or_initialize_by(post_id: @post.id, tag_id: @tag.id)

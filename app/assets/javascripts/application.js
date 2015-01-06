@@ -38,6 +38,8 @@ $(function() {
     });
 
 
+
+
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy'
     });
@@ -51,6 +53,9 @@ $(function() {
     });
 
     $('#table-content').updatePostTable();
+    $('#photo-content').updatePostTable({
+        url: '/photos/filter/'
+    });
 
     $('.btn-show-photos-ajax').click(function(e){
         e.preventDefault();
@@ -66,7 +71,7 @@ $(function() {
         var $this = $(this);
         e.preventDefault();
         $.ajax({
-            url: $(this).prop('href'),
+            url: $this.prop('href'),
             type: 'GET',
             dataType : 'html',
             success: function( html ) {
@@ -101,7 +106,6 @@ $(function() {
 
     $.fn.updatePostTable = function(opts) {
 
-        // default configuration
         var config = $.extend({}, {
             url: '/posts/filter/',
             formId: 'post-filter-form',
@@ -220,8 +224,7 @@ $(function() {
                     }
                 });
 
-            })
-        ;
+            });
         return this;
     };
 

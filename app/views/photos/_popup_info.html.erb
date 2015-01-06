@@ -1,0 +1,54 @@
+<div class="form-wrapper">
+    <h4 id="info-title"><%=@photo.title%></h4>
+
+    <dl class="dl-horizontal">
+
+      <dt id="info-id">Id:</dt>
+      <dd><%=@photo.id%></dd>
+
+      <dt id="info-post">Posts:</dt>
+      <dd>
+        <%@posts.each do |post|%>
+            <%= link_to ApplicationHelper::Post.post_public_title(post), edit_post_path(post), {:class=>'label label-danger'}%>
+        <%end%>
+      </dd>
+
+      <dt id="info-content">Content:</dt>
+      <dd><%=@photo.content%></dd>
+
+      <dt id="info-tag">Tags:</dt>
+      <dd>
+        <%@tagsArr.each do |tag|%>
+            <%= link_to tag, photos_path({:tags => tag}), {:class=>'label label-primary'}%>
+        <%end%>
+      </dd>
+
+      <dt id="info-exif">Exif:</dt>
+      <dd>
+        <%if @exif.any?%>
+            <%if @exif['mime_type'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Mime type</span> <%=@exif['mime_type']%></div><%end%>
+            <%if @exif['color_space'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Colorspace</span> <%=@exif['color_space']%></div><%end%>
+            <%if @exif['resolution'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Resolution</span> <%=@exif['resolution']%></div><%end%>
+            <%if @exif['file_size'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Size</span> <%=@exif['file_size']%></div><%end%>
+            <%if @exif['image_size'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Image size</span> <%=@exif['image_size']%></div><%end%>
+            <%if @exif['quality'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Quality</span> <%=@exif['quality']%></div><%end%>
+            <%if @exif['camera'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Camera</span> <%=@exif['camera']%></div><%end%>
+            <%if @exif['lens'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Lens</span> <%=@exif['lens']%></div><%end%>
+            <%if @exif['focal_length'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Focal length</span> <%=@exif['focal_length']%></div><%end%>
+            <%if @exif['scale_factor'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Scale factor</span> <%= @exif['scale_factor']%></div><%end%>
+            <%if @exif['iso'].present?%><div class="col-md-5 padding-0"><span class="label label-success">ISO</span> <%=@exif['iso']%></div><%end%>
+            <%if @exif['exposure_time'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Exposure time</span> <%=@exif['exposure_time']%></div><%end%>
+            <%if @exif['aperture'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Aperture</span> <%=@exif['aperture']%></div><%end%>
+            <%if @exif['modification_date'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Processed</span> <%=@exif['modification_date']%></div><%end%>
+            <%if @exif['access_date'].present?%><div class="col-md-5 padding-0"><span class="label label-success">Exif checked</span> <%= @exif['access_date']%></div><%end%>
+        <%end%>
+      </dd>
+
+      <dt id="info-map">Map:</dt>
+      <dd>
+        <%if(!@photo.geo_latitude.to_s.empty? && !@photo.geo_longitude.to_s.empty?) %>
+            <img src="<%=UrlBuilding::ExternalUrlBuilder.static_map_url(@photo.geo_latitude,@photo.geo_longitude, 7, '640x320')%>" alt="Manhattan Normal Map" class="photo-static-map">
+        <%end%>
+      </dd>
+    </dl>
+</div>

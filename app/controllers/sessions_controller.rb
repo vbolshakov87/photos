@@ -10,7 +10,9 @@ class SessionsController < ApplicationController
     postParams = post_params
     user = User.authenticate(postParams[:email], postParams[:password])
     if user
-      SessionsHelper.onLogin(user)
+
+      session[:user] = user
+      #SessionsHelper.onLogin(user)
       redirect_to root_url, :notice => 'Logged in!'
     else
       flash.now.alert = 'Invalid email or password'

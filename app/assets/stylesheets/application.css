@@ -129,3 +129,42 @@ body {
 .modal-lg .tab-content>.active {
     position: static;
 }
+.gllpLatlonPicker {
+    margin: 0;
+}
+.photo-static-map {
+    margin: 5px 0;
+}
+.padding-0 {
+    padding: 0;
+}
+.modal-photo dd {
+    margin-bottom: 5px;
+}
+.post-id {
+    visibility: hidden;
+    display: none;
+
+}
+.col-posts .tag-editor .tag-editor-tag, .col-posts .tag-editor .tag-editor-delete {
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    color: #ffffff;
+}
+.col-posts .tag-editor .tag-editor-delete i {
+    color: #ffffff;
+    position: relative;
+    top: -2px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    background: none;
+    font-size: 10px;
+    left: -2px;
+}
+.col-posts .tag-editor .tag-editor-delete i:before {
+    content: "\e014";
+}

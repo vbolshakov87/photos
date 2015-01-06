@@ -1,10 +1,9 @@
-<%
-   @photo.geo_latitude = @photo.geo_latitude.present? ? @photo.geo_latitude : 20
-   @photo.geo_longitude = @photo.geo_longitude.present? ? @photo.geo_longitude : 20
-%>
 <div class="form-wrapper">
   <%= form_for(@photo, html: { class:'form-horizontal'}) do |f| %>
-    <% if @photo.errors.any? %>
+
+
+
+      <% if @photo.errors.any? %>
         <div id="error_explanation" class="alert alert-danger">
           <strong><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</strong>
           <ul>
@@ -30,7 +29,25 @@
     </div>
 
       <div class="form-group">
-        <label class="col-sm-2 control-label">Map</label>
+        <label class="col-sm-2 control-label">Tags:</label>
+        <div class="col-sm-10">
+          <textarea class="photo-tags-editor" name="tags">
+            <%=@tagsArr.join(',')%>
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Posts:</label>
+        <div class="col-sm-10 col-posts">
+          <textarea class="post-photo-filter" name="posts">
+            <%=@postArr.join(',')%>
+          </textarea>
+        </div>
+      </div>
+
+    <div class="form-group">
+    <label class="col-sm-2 control-label">Map</label>
         <div class="col-sm-10">
           <fieldset class="gllpLatlonPicker">
             <input type="text" class="form-control gllpSearchField">
@@ -43,10 +60,16 @@
             <input type="hidden" class="gllpZoom" value="4"/>
           </fieldset>
         </div>
-      </div>
+    </div>
 
-    <div class="actions">
-        <%= f.submit %>
+    <div class="alert alert-success alert-form-saved" role="alert" style="display: none">
+        <strong>Well done!</strong> Data is updated
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-10">
+          <%= f.submit :class => 'btn btn-success btn-lg' %>
+        </div>
     </div>
   <% end %>
 </div>
@@ -62,4 +85,62 @@
             });
         }
     }
+
+    $(function() {
+        $('#block-<%=@photo.id%> .photo-tags-editor').tagEditor({
+            autocomplete: {
+                source: '/tags/for-photo',
+                minLength: 2,
+                delay: 0,
+                position: { collision: 'flip' } }
+        });
+
+        $("#block-<%=@photo.id%> form").submit(function(e){
+            e.preventDefault();
+            var $this = $(this),
+                $alertFormSaved = $this.find('.alert-form-saved'),
+                $postAria = $('#block-<%=@photo.id%> .post-photo-filter'),
+                postIdArr = [];
+
+            $this.find('.post-id').each(function(value) {
+                postIdArr.push($(this).text())
+            });
+            $postAria.val(postIdArr.join(','));
+
+            $.ajax({
+                url: $this.attr('action'),
+                type: 'POST',
+                dataType : 'json',
+                data : $this.serialize(),
+                success: function( data ) {
+                    $alertFormSaved.show(function(){
+                       setTimeout(function(){
+                        $alertFormSaved.hide()
+                       }, 2000);
+                    });
+                    console.log(data);
+                },
+                error: function( xhr, status, errorThrown ) {
+                    alert( "Sorry, there was a problem!" );
+                    console.log( "Error: " + errorThrown );
+                    console.log( "Status: " + status );
+                    console.dir( xhr );
+                }
+            });
+        });
+
+        $('#block-<%=@photo.id%> .post-photo-filter').tagEditor({
+            //initialTags: ['tag1', 'tag2', 'tag3'],
+            autocomplete: {
+                source: '/posts/autocomplite',
+                minLength: 2,
+                delay: 0,
+                forceLowercase : false,
+                position: { collision: 'flip' }
+            }
+        });
+
+    });
+
+
 </script>

@@ -2,14 +2,14 @@ class PhotosController < ApplicationController
   before_action :set_photo, only: [:show, :edit, :update, :destroy]
 
   # GET /photos
-  # GET /photos.json
   def index
-    @photos = Photo.sortPhotosAsc.all
-    respond_to do |format|
-      format.html
-      format.json { render json: @photos.map{|photo| photo.to_jq_upload } }
-    end
+    getPhotosWithFilter
+  end
 
+  def filter
+    getPhotosWithFilter
+    @show_filter = true
+    render partial: 'photo_list', formats: :html
   end
 
   # GET /photos/1
@@ -50,9 +50,46 @@ class PhotosController < ApplicationController
     end
 
     @photo = Photo.find(photoId)
+    @posts = Post.joins(:posts_photos).where('posts_photos.photo_id = ?', photoId)
+
+    tags = @photo.tags.any? ?  @photo.tags : @posts[0].tags
+    @tagsArr = Array.new
+    tags.each do |tag|
+      @tagsArr.push(tag.title)
+    end
+
+    @postArr = Array.new
+    @posts.each do |post|
+      @postArr.push(ApplicationHelper::Post.post_autocomplite_title(post))
+    end
+
+    #default values
+    @photo.geo_latitude = @photo.geo_latitude.present? ? @photo.geo_latitude : (@posts[0].present? ? @posts[0].geo_latitude : Rails.application.config.default_geo_latitude )
+    @photo.geo_longitude = @photo.geo_longitude.present? ? @photo.geo_longitude : (@posts[0].present? ? @posts[0].geo_longitude : Rails.application.config.default_geo_longitude )
+    @exif = ActiveSupport::JSON.decode(@photo.exif)
     render partial: 'popup', formats: :html
   end
 
+  def exif
+    photoId = params[:photo]
+    if (!photoId)
+      raise 'there is no post in in input params'
+    end
+
+    photo = Photo.find(photoId)
+    path = Rails.root + photo.image.path(:original)
+
+    @exifRawHash = {}
+    exifRaw = %x(identify -verbose #{path}).split("\n")
+    exifRaw.each do |exifString|
+      exifArr = exifString.sub('exif:', '').strip.split(':').collect { |x| x.strip }
+      #if (['Image', 'Format', 'Mime', 'Geometry', 'Resolution', 'Colorspace', 'Depth', 'Pixels', 'Quality', 'Orientation', 'DateTime', 'FocalLength', 'FocalLengthIn35mmFilm', 'Make', 'MaxApertureValue', 'Model', 'Software', 'Created Date[2,55]', 'Version'].include?(exifArr[0]))
+        @exifRawHash[exifArr[0]] = exifArr[1]
+      #end
+      #render :text => exifArr
+      #break
+    end
+  end
 
   # sort images
   def sort
@@ -106,6 +143,7 @@ class PhotosController < ApplicationController
 
   # GET /photos/1/edit
   def edit
+
   end
 
 
@@ -159,16 +197,42 @@ class PhotosController < ApplicationController
   # PATCH/PUT /photos/1
   # PATCH/PUT /photos/1.json
   def update
+    # myParams = photo_params
     respond_to do |format|
       if @photo.update(photo_params)
+
+        # save tags
+        save_tags true
+
+        PostPhoto.delete_all(photo_id: @photo.id)
+        if (params[:posts].length > 0)
+          posts = params[:posts].split(',').uniq
+          posts.each do |postId|
+            postPhoto = PostPhoto.find_or_initialize_by(post_id: postId, photo_id: @photo.id)
+            postPhoto.save
+          end
+        end
+
         format.html { redirect_to @photo, notice: 'Photo was successfully updated.' }
-        format.json { render :show, status: :ok, location: @photo }
+        format.json {
+          render json: {
+            status: :ok,
+            photo: @photo
+          }
+        }
       else
         format.html { render :edit }
-        format.json { render json: @photo.errors, status: :unprocessable_entity }
+        format.json {
+          render json: {
+              errors => @photo.errors,
+              status => :error
+          },
+          status: :unprocessable_entity
+        }
       end
     end
   end
+
 
   # DELETE /photos/1
   # DELETE /photos/1.json
@@ -192,6 +256,58 @@ class PhotosController < ApplicationController
   end
 
   private
+
+    def getPhotosWithFilter
+      photoRecord = Photo
+
+      @sort = {
+          :created_at => 'desc'
+      }
+      if (params[:sort].present?)
+        @sort = params[:sort]
+      end
+
+      #counts
+      photoRecord = photoRecord.select('photos.*').joins('LEFT JOIN posts_photos ON posts_photos.photo_id = photos.id').joins('LEFT JOIN posts ON posts_photos.post_id = posts.id')
+
+      if (params[:filter].present?)
+        #by name
+        photoRecord = photoRecord.byName(params[:filter][:name])
+
+        # by tags
+        if (params[:filter].present? && params[:filter][:tags].present?)
+          tags = params[:filter][:tags].split(',').uniq
+          photoRecord = photoRecord.joins(:tags)
+          photoRecord = photoRecord.where('tags.title IN (?)', tags)
+        end
+
+        # by dates
+        if (params[:filter][:date_from].to_s.length > 0)
+          photoRecord = photoRecord.where('posts.date_from >= ?',  DateTime.strptime(params[:filter][:date_from], '%d/%m/%Y'))
+        end
+        if (params[:filter][:date_to].to_s.length > 0)
+          photoRecord = photoRecord.where('posts.date_to <= ?',  DateTime.strptime(params[:filter][:date_to], '%d/%m/%Y'))
+        end
+      end
+
+      @sort.each do |column,direction|
+        photoRecord = photoRecord.order(column.to_s + ' ' + direction.to_s)
+      end
+
+      # paging
+      @perPage = 4
+      if (cookies[:photo_per_page].present?)
+        @perPage = cookies[:photo_per_page];
+      end
+      if (params[:per_page].present? && params[:per_page].to_i > 0)
+        @perPage = params[:per_page].to_i;
+      end
+      cookies[:photo_per_page] = { :value => @perPage, :expires => 10.day.from_now }
+
+      @photos = photoRecord.paginate(:page => params[:page], :per_page => @perPage)
+    end
+
+
     # Use callbacks to share common setup or constraints between actions.
     def set_photo
       @photo = Photo.find(params[:id])
@@ -200,6 +316,27 @@ class PhotosController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def photo_params
       #render :text => params
-      params.require(:photo).permit(:title, :image)
+      params.require(:photo).permit(:title, :image, :content, :geo_latitude, :geo_longitude)
+    end
+
+    def save_tags(deleteOldTags = true)
+      #delete all old tags
+      if (deleteOldTags)
+        PhotoTag.delete_all(photo_id: @photo.id)
+      end
+      #save new tags
+      if (params[:tags].length > 0)
+        @tags = params[:tags].split(',').uniq
+        @tags.each do |tagName|
+          tagName = tagName.downcase.strip
+          @tag = Tag.find_or_initialize_by(title: tagName, for: Tag::TYPE_PHOTO)
+          if (@tag.save)
+            @postTag = PhotoTag.find_or_initialize_by(photo_id: @photo.id, tag_id: @tag.id)
+            @postTag.save
+          end
+          #save tags count
+
+        end
+      end
     end
 end

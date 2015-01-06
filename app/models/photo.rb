@@ -3,6 +3,7 @@ class Photo < ActiveRecord::Base
  # has_and_belongs_to_many :posts
   has_many :post_photo, class_name: PostPhoto, dependent: :destroy
   has_and_belongs_to_many :tags
+  has_and_belongs_to_many :posts, :join_table => :posts_photos
   has_many :photo_tag, class_name: PhotoTag
 
   has_attached_file :image,
@@ -33,7 +34,13 @@ class Photo < ActiveRecord::Base
       joins(:post_photo).
       where('posts_photos.post_id = ?', postId)
     end
+  }
 
+  #scope for photo title
+  scope :byName, ->(name) {
+    if (name.length > 0)
+      where('photos.title LIKE ?', "%#{name}%")
+    end
   }
 
   #scope for sorting photos
@@ -62,10 +69,6 @@ class Photo < ActiveRecord::Base
     helper.number_to_human_size(read_attribute(:image_file_size))
   end
 
-
-  def getGsif
-
-  end
 
   private
   def setTitleBeforeSave

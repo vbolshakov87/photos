@@ -17,13 +17,18 @@ class TagsController < ApplicationController
     @tag = Tag.new
   end
 
-  def for_post
+  def autocomplite
     term = params[:term]
+    essence = params[:essence]
     maxCount = !params[:maxCount].blank? && params[:maxCount].to_i > 1 ? params[:maxCount].to_i : 10
+
+    tagsCriteria = Tag.limit(maxCount)
+    tagsCriteria = essence == Tag::TYPE_POST ? tagsCriteria.fromPost : tagsCriteria.fromPhoto
+
     if (term.empty?)
-      @tags = Tag.limit(maxCount).all
+      @tags = tagsCriteria.all
     else
-      @tags = Tag.limit(maxCount).all.where(["title like ?", "%#{term}%"])
+      @tags = tagsCriteria.searchByTag(term).all
     end
 
     @tagTitleArr = Array.new

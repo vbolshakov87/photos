@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141223014431) do
+ActiveRecord::Schema.define(version: 20141224200328) do
 
   create_table "categories", force: true do |t|
     t.string   "title",        limit: 255,               null: false
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20141223014431) do
   end
 
   create_table "photos", force: true do |t|
-    t.string   "title",              limit: 255
+    t.string   "title",              limit: 255,   default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "image_file_name",    limit: 255
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20141223014431) do
     t.float    "geo_latitude",       limit: 24
     t.float    "geo_longitude",      limit: 24
     t.text     "content",            limit: 65535
+    t.text     "exif",               limit: 65535
   end
 
   create_table "photos_tags", force: true do |t|
@@ -90,9 +91,9 @@ ActiveRecord::Schema.define(version: 20141223014431) do
   create_table "tags", force: true do |t|
     t.string   "title",      limit: 255
     t.integer  "count",      limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.string   "type",       limit: 5
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.string   "for",        limit: 5,   default: "post"
   end
 
   create_table "users", force: true do |t|

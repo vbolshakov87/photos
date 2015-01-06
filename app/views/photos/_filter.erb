@@ -1,0 +1,45 @@
+<%
+   now = Time.now.to_s
+   filterInput = {};
+   filterInput[:name] = params[:filter].present? ? params[:filter][:name] : ''
+   filterInput[:tags] = params[:filter].present? ? params[:filter][:tags] : ''
+   filterInput[:dateFrom] = params[:filter].present? ? params[:filter][:date_from] : ''
+   filterInput[:dateTo] = params[:filter].present? ? params[:filter][:date_to] : ''
+%>
+<div><a class="to-toggle to-toggle-filter">Filter</a></div>
+<div class="form-wrapper col-sm-5 toggle-filter" style="padding-top: 15px;<%if !params[:filter].present?%> display: none;<%end%>">
+    <form class="form-horizontal" role="form" method="get" action="" id="post-filter-form">
+      <div class="form-group">
+        <label for="inputTitle" class="col-sm-3 control-label">Title</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="inputTitle" placeholder="title for search" name="filter[name]" value="<%=filterInput[:name]%>">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputTags" class="col-sm-3 control-label">Tags</label>
+        <div class="col-sm-9">
+          <textarea class="post-tags-filter" name="filter[tags]" id="inputTags">
+          <%=filterInput[:tags]%>
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="dateFrom" class="col-sm-3 control-label">Date from</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control datepicker" id="dateFrom" placeholder="" name="filter[date_from]" value="<%=filterInput[:dateFrom]%>">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="dateTo" class="col-sm-3 control-label">Date to</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control datepicker" id="dateTo" placeholder="" name="filter[date_to]" value="<%=filterInput[:dateTo]%>">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-4">
+          <button type="submit" class="btn btn-primary btn-lg" id="filter-post">Filter</button>
+        </div>
+      </div>
+    </form>
+</div>
+<div class="clearfix"></div>

@@ -1,0 +1,65 @@
+<div class="list-file-upload">
+  <%
+     i=0
+     @photos.each do |photo|
+        exif = photo.exif.present? ? ActiveSupport::JSON.decode(photo.exif) : {}
+        i+=1
+  %>
+      <div class="col-sm-6 col-md-3 template-download  fade in"  data-target="#modal-gallery" data-id="<%=photo.id%>">
+        <div class="thumbnail">
+          <a href="<%=photo_popup_path photo%>" class="photo-edit" role="button"><%= image_tag photo.image.url(:list) %></a>
+          <div class="caption">
+            <h3><a href="<%=photo.image.url(:original)%>" title="<%=photo.image_file_name%>" rel="" download="<%=photo.image_file_name%>"><%=photo.title%></a></h3>
+            <div>
+              <span><%=photo.imageFileSize%></span>
+              <div>
+                <strong>Posts:</strong>
+                <%photo.posts.each do |tag|%>
+                  <%= link_to tag.title, posts_path({:tags => tag.title}), {:class=>'label label-primary'}%>
+                <%end%>
+              </div>
+              <!--
+              <div>
+                  <strong>Tags:</strong>
+                  <%photo.tags.each do |tag|%>
+                      <%= link_to tag.title, posts_path({:tags => tag.title}), {:class=>'label label-primary'}%>
+                  <%end%>
+              </div>
+              -->
+            </div>
+
+            <div class="button-group">
+              <div class="block-inline delete">
+                <button class="btn btn-danger" data-type="DELETE" data-url="<%=photo_path(photo)%>">
+                  <i class="icon-trash icon-white"></i>
+                  <span><span class="glyphicon glyphicon-trash"></span> Delete</span>
+                </button>
+                <input type="checkbox" name="delete" value="1">
+              </div>
+              <a href="<%=photo_popup_path photo%>" class="block-inline btn btn-primary photo-edit" role="button"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Edit</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% if (i%4 == 0) %>
+        <div class="clearfix"></div>
+      <% end %>
+  <% end %>
+</div>
+<div class="clearfix"></div>
+<% if ( (defined?(locals[:show_filter]) && locals[:show_filter] == true) || (defined?(@show_filter) && @show_filter == true) ) %>
+<%= will_paginate @photos, renderer: BootstrapPagination::Rails, :id => true %>
+<div class="btn-group btn-group-per-page" role="group" data-per-page="<%=@perPage%>">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <%=@perPage%> items on page
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="#">4</a></li>
+    <li><a href="#">8</a></li>
+    <li><a href="#">16</a></li>
+    <li><a href="#">32</a></li>
+    <li><a href="#">256</a></li>
+  </ul>
+</div>
+<% end %>

@@ -10,7 +10,6 @@ class Post < ActiveRecord::Base
     if (name.length > 0)
       where('posts.title LIKE ?', "%#{name}%")
     end
-
   }
 
 end

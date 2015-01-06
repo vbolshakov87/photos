@@ -2,12 +2,12 @@
   <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
   <h4 class="modal-title" id="myLargeModalLabel">Title</h4>
 </div>
-<div class="modal-body" id="block-<%=@photo.id%>">
+<div class="modal-body modal-photo" id="block-<%=@photo.id%>">
   <ul class="nav nav-tabs" role="tablist" id="myTab">
     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Photo</a></li>
     <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
     <li role="presentation"><a href="#edit" aria-controls="edit" role="tab" data-toggle="tab" class="map-to-resize" onclick="showMap()">Edit content</a></li>
-    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+    <li role="presentation"><a href="#sharing" aria-controls="Sharing" role="tab" data-toggle="tab">Sharing</a></li>
   </ul>
 
   <div class="tab-content">
@@ -17,13 +17,13 @@
       </div>
     </div>
     <div role="tabpanel" class="tab-pane" id="profile">
-
-      <%=%x(identify -verbose public/system/photos/images/000/000/001/original/20140103-20140103-DSC_0905-2.jpg)%>
-
+      <%= render 'popup_info' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="edit">
       <%= render 'form' %>
     </div>
-    <div role="tabpanel" class="tab-pane" id="settings">4</div>
+    <div role="tabpanel" class="tab-pane" id="sharing">
+      <%= render 'popup_sharing' %>
+    </div>
   </div>
 </div>
