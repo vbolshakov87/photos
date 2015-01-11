@@ -22,13 +22,13 @@ class TagsController < ApplicationController
     essence = params[:essence]
     maxCount = !params[:maxCount].blank? && params[:maxCount].to_i > 1 ? params[:maxCount].to_i : 10
 
-    tagsCriteria = Tag.limit(maxCount)
-    tagsCriteria = essence == Tag::TYPE_POST ? tagsCriteria.fromPost : tagsCriteria.fromPhoto
+    tags_criteria = Tag.limit(maxCount)
+    tags_criteria = essence == Tag::TYPE_POST ? tags_criteria.from_post : tags_criteria.from_photo
 
     if (term.empty?)
-      @tags = tagsCriteria.all
+      @tags = tags_criteria.all
     else
-      @tags = tagsCriteria.searchByTag(term).all
+      @tags = tags_criteria.searchByTag(term).all
     end
 
     @tagTitleArr = Array.new

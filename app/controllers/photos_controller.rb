@@ -3,11 +3,11 @@ class PhotosController < ApplicationController
 
   # GET /photos
   def index
-    getPhotosWithFilter
+    get_photos_with_filter
   end
 
   def filter
-    getPhotosWithFilter
+    get_photos_with_filter
     @show_filter = true
     render partial: 'photo_list', formats: :html
   end
@@ -18,13 +18,13 @@ class PhotosController < ApplicationController
   end
 
   def forpost
-    postId = params[:post]
-    if (!postId)
+    post_id = params[:post]
+    if (!post_id)
       raise 'there is no post in in input params'
     end
 
-    @photos = Photo.sortPhotosAsc.fromPost(postId).all
-    @post = Post.find(postId);
+    @photos = Photo.sort_photos_asc.from_post(post_id).all
+    @post = Post.find(post_id)
 
     respond_to do |format|
       format.html
@@ -33,35 +33,44 @@ class PhotosController < ApplicationController
   end
 
   def post_gallery_ajax
-    postId = params[:post]
-    if (!postId)
+    post_id = params[:post]
+    if (!post_id)
       raise 'there is no post in in input params'
     end
 
-    @photos = Photo.sortPhotosAsc.fromPost(postId).all
+    @photos = Photo.sort_photos_asc.from_post(post_id).all
     render partial: 'post_gallery_ajax', formats: :html
   end
 
 
   def popup
-    photoId = params[:photo]
-    if (!photoId)
+    photo_id = params[:photo]
+    if (!photo_id)
       raise 'there is no post in in input params'
     end
 
-    @photo = Photo.find(photoId)
-    @posts = Post.joins(:posts_photos).where('posts_photos.photo_id = ?', photoId)
+    @photo = Photo.find(photo_id)
+    @posts = Post.joins(:posts_photos).where('posts_photos.photo_id = ?', photo_id)
 
-    tags = @photo.tags.any? ?  @photo.tags : @posts[0].tags
-    @tagsArr = Array.new
-    tags.each do |tag|
-      @tagsArr.push(tag.title)
+    @tags_arr = Array.new
+    @post_arr = Array.new
+
+    if (!@posts.empty?)
+
+      tags = @photo.tags.any? ?  @photo.tags : @posts[0].tags
+      tags.each do |tag|
+        @tags_arr.push(tag.title)
+      end
+
+      @posts.each do |post|
+        @post_arr.push(ApplicationHelper::Post.post_autocomplite_title(post))
+      end
+
     end
 
-    @postArr = Array.new
-    @posts.each do |post|
-      @postArr.push(ApplicationHelper::Post.post_autocomplite_title(post))
-    end
+
+
+
 
     #default values
     @photo.geo_latitude = @photo.geo_latitude.present? ? @photo.geo_latitude : (@posts[0].present? ? @posts[0].geo_latitude : Rails.application.config.default_geo_latitude )
@@ -71,33 +80,33 @@ class PhotosController < ApplicationController
   end
 
   def exif
-    photoId = params[:photo]
-    if (!photoId)
+    photo_id = params[:photo]
+    if (!photo_id)
       raise 'there is no post in in input params'
     end
 
-    photo = Photo.find(photoId)
+    photo = Photo.find(photo_id)
     path = Rails.root + photo.image.path(:original)
 
-    @exifRawHash = {}
+    @exif_raw_hash = {}
     exifRaw = %x(identify -verbose #{path}).split("\n")
     exifRaw.each do |exifString|
-      exifArr = exifString.sub('exif:', '').strip.split(':').collect { |x| x.strip }
-      #if (['Image', 'Format', 'Mime', 'Geometry', 'Resolution', 'Colorspace', 'Depth', 'Pixels', 'Quality', 'Orientation', 'DateTime', 'FocalLength', 'FocalLengthIn35mmFilm', 'Make', 'MaxApertureValue', 'Model', 'Software', 'Created Date[2,55]', 'Version'].include?(exifArr[0]))
-        @exifRawHash[exifArr[0]] = exifArr[1]
+      exif_arr = exifString.sub('exif:', '').strip.split(':').collect { |x| x.strip }
+      #if (['Image', 'Format', 'Mime', 'Geometry', 'Resolution', 'Colorspace', 'Depth', 'Pixels', 'Quality', 'Orientation', 'DateTime', 'FocalLength', 'FocalLengthIn35mmFilm', 'Make', 'MaxApertureValue', 'Model', 'Software', 'Created Date[2,55]', 'Version'].include?(exif_arr[0]))
+        @exif_raw_hash[exif_arr[0]] = exif_arr[1]
       #end
-      #render :text => exifArr
+      #render :text => exif_arr
       #break
     end
   end
 
   # sort images
   def sort
-    postId = params[:post]
+    post_id = params[:post]
     sorted = params[:sorted].uniq
 
     # get ids from the DB
-    existValues = Photo.where('`photos`.`id` IN (?)', sorted).fromPost(postId).select('photos.id').all.to_a
+    existValues = Photo.where('`photos`.`id` IN (?)', sorted).from_post(post_id).select('photos.id').all.to_a
     # cj=heck by count
     if (existValues.length != sorted.length)
       raise 'error in images count'
@@ -113,7 +122,7 @@ class PhotosController < ApplicationController
       if (existValuesHash.has_key?(value))
         existValuesHash.delete(value)
       else
-        raise "error photo id=#{value} does not exist in a post #{postId}"
+        raise "error photo id=#{value} does not exist in a post #{post_id}"
       end
     end
 
@@ -175,8 +184,8 @@ class PhotosController < ApplicationController
             post.save
           end
 
-          @postPhoto = PostPhoto.find_or_initialize_by(post_id: params[:post_id], photo_id: @photo.id)
-          @postPhoto.save
+          post_photo = PostPhoto.find_or_initialize_by(post_id: params[:post_id], photo_id: @photo.id)
+          post_photo.save
 
         end
 
@@ -207,9 +216,9 @@ class PhotosController < ApplicationController
         PostPhoto.delete_all(photo_id: @photo.id)
         if (params[:posts].length > 0)
           posts = params[:posts].split(',').uniq
-          posts.each do |postId|
-            postPhoto = PostPhoto.find_or_initialize_by(post_id: postId, photo_id: @photo.id)
-            postPhoto.save
+          posts.each do |post_id|
+            post_photo = PostPhoto.find_or_initialize_by(post_id: post_id, photo_id: @photo.id)
+            post_photo.save
           end
         end
 
@@ -240,8 +249,8 @@ class PhotosController < ApplicationController
     #remove main photo if necessary
     post = Post.where(main_photo: @photo.id).first
     if (post.present?)
-      firstPhoto = Photo.sortPhotosAsc.fromPost(post.id).first
-      if (firstPhoto.present?)
+      first_photo = Photo.sort_photos_asc.from_post(post.id).first
+      if (first_photo.present?)
         post.main_photo = firstPhoto.id
         post.save
       end
@@ -257,8 +266,8 @@ class PhotosController < ApplicationController
 
   private
 
-    def getPhotosWithFilter
-      photoRecord = Photo
+    def get_photos_with_filter
+      photo_record = Photo
 
       @sort = {
           :created_at => 'desc'
@@ -268,30 +277,30 @@ class PhotosController < ApplicationController
       end
 
       #counts
-      photoRecord = photoRecord.select('photos.*').joins('LEFT JOIN posts_photos ON posts_photos.photo_id = photos.id').joins('LEFT JOIN posts ON posts_photos.post_id = posts.id')
+      photo_record = photo_record.select('photos.*').joins('LEFT JOIN posts_photos ON posts_photos.photo_id = photos.id').joins('LEFT JOIN posts ON posts_photos.post_id = posts.id')
 
       if (params[:filter].present?)
         #by name
-        photoRecord = photoRecord.byName(params[:filter][:name])
+        photo_record = photo_record.by_name(params[:filter][:name])
 
         # by tags
         if (params[:filter].present? && params[:filter][:tags].present?)
           tags = params[:filter][:tags].split(',').uniq
-          photoRecord = photoRecord.joins(:tags)
-          photoRecord = photoRecord.where('tags.title IN (?)', tags)
+          photo_record = photo_record.joins(:tags)
+          photo_record = photo_record.where('tags.title IN (?)', tags)
         end
 
         # by dates
         if (params[:filter][:date_from].to_s.length > 0)
-          photoRecord = photoRecord.where('posts.date_from >= ?',  DateTime.strptime(params[:filter][:date_from], '%d/%m/%Y'))
+          photo_record = photo_record.where('posts.date_from >= ?',  DateTime.strptime(params[:filter][:date_from], '%d/%m/%Y'))
         end
         if (params[:filter][:date_to].to_s.length > 0)
-          photoRecord = photoRecord.where('posts.date_to <= ?',  DateTime.strptime(params[:filter][:date_to], '%d/%m/%Y'))
+          photo_record = photo_record.where('posts.date_to <= ?',  DateTime.strptime(params[:filter][:date_to], '%d/%m/%Y'))
         end
       end
 
       @sort.each do |column,direction|
-        photoRecord = photoRecord.order(column.to_s + ' ' + direction.to_s)
+        photo_record = photo_record.order(column.to_s + ' ' + direction.to_s)
       end
 
       # paging
@@ -304,7 +313,7 @@ class PhotosController < ApplicationController
       end
       cookies[:photo_per_page] = { :value => @perPage, :expires => 10.day.from_now }
 
-      @photos = photoRecord.paginate(:page => params[:page], :per_page => @perPage)
+      @photos = photo_record.paginate(:page => params[:page], :per_page => @perPage)
     end
 
 
@@ -319,20 +328,20 @@ class PhotosController < ApplicationController
       params.require(:photo).permit(:title, :image, :content, :geo_latitude, :geo_longitude)
     end
 
-    def save_tags(deleteOldTags = true)
+    def save_tags(delete_old_tags = true)
       #delete all old tags
-      if (deleteOldTags)
+      if (delete_old_tags)
         PhotoTag.delete_all(photo_id: @photo.id)
       end
       #save new tags
       if (params[:tags].length > 0)
-        @tags = params[:tags].split(',').uniq
-        @tags.each do |tagName|
-          tagName = tagName.downcase.strip
-          @tag = Tag.find_or_initialize_by(title: tagName, for: Tag::TYPE_PHOTO)
-          if (@tag.save)
-            @postTag = PhotoTag.find_or_initialize_by(photo_id: @photo.id, tag_id: @tag.id)
-            @postTag.save
+        tags = params[:tags].split(',').uniq
+        tags.each do |tag_name|
+          tag_name = tag_name.downcase.strip
+          tag = Tag.find_or_initialize_by(title: tag_name, for: Tag::TYPE_PHOTO)
+          if (tag.save)
+            postTag = PhotoTag.find_or_initialize_by(photo_id: @photo.id, tag_id: tag.id)
+            postTag.save
           end
           #save tags count
 

@@ -11,7 +11,7 @@
           <div class="caption">
             <h3><a href="<%=photo.image.url(:original)%>" title="<%=photo.image_file_name%>" rel="" download="<%=photo.image_file_name%>"><%=photo.title%></a></h3>
             <div>
-              <span><%=photo.imageFileSize%></span>
+              <span><%=photo.image_file_size%></span>
               <div>
                 <strong>Posts:</strong>
                 <%photo.posts.each do |tag|%>

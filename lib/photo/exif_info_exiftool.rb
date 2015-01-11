@@ -46,9 +46,9 @@ class ExifInfoExiftool < ExifInfo
     exifRawHash = {}
     exifRaw = self.row_data.split("\n")
     exifRaw.each do |exifString|
-      exifArr = exifString.strip.split(': ').collect { |x| x.strip }
-      if (@@EXIF_RELEVANT_DATA.include?(exifArr[0]))
-        exifRawHash[exifArr[0]] = exifArr[1]
+      exif_arr = exifString.strip.split(': ').collect { |x| x.strip }
+      if (@@EXIF_RELEVANT_DATA.include?(exif_arr[0]))
+        exifRawHash[exif_arr[0]] = exif_arr[1]
       end
     end
 

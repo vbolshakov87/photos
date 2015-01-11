@@ -18,7 +18,7 @@ class Tag < ActiveRecord::Base
     end
   }
 
-  scope :fromPost, -> { where('tags.for = ?', Tag::TYPE_POST) }
-  scope :fromPhoto, -> { where('tags.for = ?', Tag::TYPE_PHOTO) }
+  scope :from_post, -> { where('tags.for = ?', Tag::TYPE_POST) }
+  scope :from_photo, -> { where('tags.for = ?', Tag::TYPE_PHOTO) }
 
 end

@@ -7,7 +7,7 @@ class Post < ActiveRecord::Base
   has_many :categories_posts, class_name: CategoryPost
 
   #scope for post
-  scope :byName, ->(name) {
+  scope :by_name, ->(name) {
     if (name.length > 0)
       where('posts.title LIKE ?', "%#{name}%")
     end

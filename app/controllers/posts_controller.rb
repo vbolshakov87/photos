@@ -31,7 +31,7 @@ class PostsController < ApplicationController
     end
 
     @category_active_ids = Array.new
-    @post.category_posts.each do |cat_post|
+    @post.categories_posts.each do |cat_post|
       @category_active_ids.push(cat_post.category_id)
     end
 
@@ -98,7 +98,7 @@ class PostsController < ApplicationController
     if (term.empty?)
       posts = post_criteria.all
     else
-      posts = post_criteria.byName(term).all
+      posts = post_criteria.by_name(term).all
     end
 
     post_title_arr = Array.new
@@ -189,7 +189,7 @@ class PostsController < ApplicationController
 
       if (params[:filter].present?)
         #by name
-        postRecord = postRecord.byName(params[:filter][:name])
+        postRecord = postRecord.by_name(params[:filter][:name])
 
         # by tags
         if (params[:filter][:tags].present?)

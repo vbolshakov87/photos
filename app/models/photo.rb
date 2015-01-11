@@ -25,10 +25,10 @@ class Photo < ActiveRecord::Base
                     :default_url => '/images/:style/missing.png'
   validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/
 
-  before_create :setTitleBeforeSave
+  before_create :set_title_before_save
 
   #scope for post
-  scope :fromPost, ->(postId) {
+  scope :from_post, ->(postId) {
     postId = postId.to_i
     if (postId > 0)
       joins(:post_photo).
@@ -37,14 +37,14 @@ class Photo < ActiveRecord::Base
   }
 
   #scope for photo title
-  scope :byName, ->(name) {
+  scope :by_name, ->(name) {
     if (name.length > 0)
       where('photos.title LIKE ?', "%#{name}%")
     end
   }
 
   #scope for sorting photos
-  scope :sortPhotosAsc, -> { order('sort ASC') }
+  scope :sort_photos_asc, -> { order('sort ASC') }
 
 
   include Rails.application.routes.url_helpers
@@ -64,14 +64,14 @@ class Photo < ActiveRecord::Base
   end
 
 
-  def imageFileSize
+  def image_file_size
     helper = Object.new.extend(ActionView::Helpers::NumberHelper)
     helper.number_to_human_size(read_attribute(:image_file_size))
   end
 
 
   private
-  def setTitleBeforeSave
+  def set_title_before_save
     if (self.title.to_s.length < 1)
       stops = ['.jpeg', '.jpg']
       self.title = self.image_file_name.gsub(Regexp.union(stops), '')
