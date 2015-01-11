@@ -37,13 +37,9 @@ $(function() {
         }
     });
 
-
-
-
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy'
     });
-
 
     $('.btn-show-photos').click(function(){
         $('.bs-example-modal-lg').modal({
@@ -55,21 +51,9 @@ $(function() {
     $('#table-content').updatePostTable({
         url: '/posts/filter/'
     });
-//    $('#photo-content').updatePostTable({
-//        url: '/photos/filter/'
-//    });
-
-    $('.btn-show-photos-ajax').click(function(e){
-        e.preventDefault();
-        $('.toggle-filter').toggle();
-    });
-
-    $('.to-toggle-filter').click(function(){
-        $('.toggle-filter').toggle();
-    });
-
-
-    $('.list-file-upload').on( 'click', '.photo-edit', function(e) {
+    $('#photo-content').updatePostTable({
+        url: '/photos/filter/'
+    }).on( 'click', '.photo-edit', function(e) {
         var $this = $(this);
         e.preventDefault();
         $.ajax({
@@ -99,7 +83,16 @@ $(function() {
             }
         });
 
-    })
+    });
+
+    $('.btn-show-photos-ajax').click(function(e){
+        e.preventDefault();
+        $('.toggle-filter').toggle();
+    });
+
+    $('.to-toggle-filter').click(function(){
+        $('.toggle-filter').toggle();
+    });
 
 });
 

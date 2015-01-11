@@ -146,6 +146,7 @@ body {
     display: none;
 
 }
+/*
 .col-posts .tag-editor .tag-editor-tag, .col-posts .tag-editor .tag-editor-delete {
     background-color: #d9534f;
     border-color: #d43f3a;
@@ -167,7 +168,7 @@ body {
 }
 .col-posts .tag-editor .tag-editor-delete i:before {
     content: "\e014";
-}
+}*/
 .nested_messages {
     margin-left: 30px;
 }
