@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141224200328) do
+ActiveRecord::Schema.define(version: 20150107192853) do
 
   create_table "categories", force: true do |t|
     t.string   "title",        limit: 255,               null: false
@@ -20,7 +20,18 @@ ActiveRecord::Schema.define(version: 20141224200328) do
     t.datetime "updated_at",                             null: false
     t.integer  "posts_count",  limit: 4,     default: 0
     t.integer  "photos_count", limit: 4,     default: 0
+    t.string   "ancestry",     limit: 255
   end
+
+  add_index "categories", ["ancestry"], name: "index_categories_on_ancestry", using: :btree
+
+  create_table "categories_posts", force: true do |t|
+    t.integer "post_id",     limit: 4, null: false
+    t.integer "category_id", limit: 4, null: false
+  end
+
+  add_index "categories_posts", ["category_id"], name: "fk_category", using: :btree
+  add_index "categories_posts", ["post_id"], name: "fk_post", using: :btree
 
   create_table "flickr_tokens", force: true do |t|
     t.string   "oauth_token",        limit: 255, default: "",        null: false
@@ -104,6 +115,8 @@ ActiveRecord::Schema.define(version: 20141224200328) do
     t.datetime "updated_at",                null: false
   end
 
+  add_foreign_key "categories_posts", "categories", name: "categories_posts_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "categories_posts", "posts", name: "categories_posts_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "photos_tags", "photos", name: "photos_tags_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "photos_tags", "tags", name: "photos_tags_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "posts", "photos", column: "main_photo", name: "posts_ibfk_1", on_update: :cascade, on_delete: :nullify

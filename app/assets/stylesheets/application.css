@@ -168,3 +168,34 @@ body {
 .col-posts .tag-editor .tag-editor-delete i:before {
     content: "\e014";
 }
+.nested_messages {
+    margin-left: 30px;
+}
+
+.nested_messages .nested_messages .nested_messages .nested_messages {
+    margin-left: 0;
+}
+.category-h4 {
+    display: inline-block;
+}
+.category-li {
+
+}
+.category-li .btn {
+    margin-top: -4px;
+}
+.category-level {
+
+}
+.category-level input[type=checkbox] {
+    position: relative;
+    top: -1px;
+    margin-right: 1px;
+}
+.category-level-1 {margin-left: 0}
+.category-level-2 {margin-left: 10px}
+.category-level-3 {margin-left: 20px}
+.category-level-4 {margin-left: 30px}
+.category-level-5 {margin-left: 40px}
+.category-level-6 {margin-left: 50px}
+.category-level-7 {margin-left: 60px}

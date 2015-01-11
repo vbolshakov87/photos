@@ -1,21 +1,29 @@
 Rails.application.routes.draw do
 
+  get 'photos/filter', to: 'photos#filter', as: 'photos_filter'
   resources :photos
   get 'photos/post-gallery-ajax/:post', to: 'photos#post_gallery_ajax', as: 'photos_post_gallery_ajax'
   get 'photos/forpost/:post', to: 'photos#forpost', as: 'photos_for_post'
   get 'photos/popup/:photo', to: 'photos#popup', as: 'photo_popup'
+  get 'photos/exif/:photo', to: 'photos#exif', as: 'photo_exif'
   post 'photos/sort/:post', to: 'photos#sort', as: 'photos_sort'
 
-  get 'tags/for-post', to: 'tags#for_post', as: 'tags_for_post'
+
+  get 'tags/for-:essence', to: 'tags#autocomplite', as: 'tags_autocomplite'
   resources :tags
 
   get 'posts/filter', to: 'posts#filter', as: 'posts_filter'
+  get 'posts/autocomplite', to: 'posts#autocomplite', as: 'posts_autocomplite'
   resources :posts
 
   get 'log_out' => 'sessions#destroy', :as => 'log_out'
   get 'log_in' => 'sessions#new', :as => 'log_in'
   get 'sign_up' => 'users#new', :as => 'sign_up'
   root :to => 'posts#index'
+
+  get 'categories/delete/:id', to: 'categories#delete', as: 'category_delete'
+  resources :categories
+
   resources :users
   resources :sessions
 

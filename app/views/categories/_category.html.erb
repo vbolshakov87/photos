@@ -1,0 +1,16 @@
+<%category = locals[:category]%>
+<li class="category-li">
+  <h4 class="category-h4"><%= link_to category.title, category %></h4>
+  <div class="btn-group" role="group" aria-label="...">
+      <%= link_to 'Edit', edit_category_path(category), { :class=>'btn btn-xs btn-success' } %>
+      <%= link_to 'Delete', category_delete_path(category), {:class => 'btn btn-xs btn-danger'} %>
+      <%= link_to 'Add child', new_category_path(:parent_id => category.id), {:class => 'btn btn-xs btn-info'} %>
+  </div>
+  <%if (category.has_children? === true)%>
+      <ul>
+        <%category.children.each do |sub_category|%>
+            <%=render 'category', locals: { :category => sub_category}%>
+        <%end%>
+      </ul>
+  <%end%>
+</li>

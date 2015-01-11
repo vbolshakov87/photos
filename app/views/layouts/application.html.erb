@@ -23,10 +23,11 @@
     </div>
     <!<div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><%= link_to "All Posts", posts_path%></li>
-        <li><%= link_to "All Photos", photos_path%></li>
-        <li><%= link_to "All Tags", tags_path%></li>
-        <li><a href="#contact">Contact</a></li>
+        <li<%if active_page('categories')%> class="active"<%end%>><%= link_to "Categories", categories_path%></li>
+        <li<%if active_page('posts')%> class="active"<%end%>><%= link_to "All Posts", posts_path%></li>
+        <li<%if active_page('photos')%> class="active"<%end%>><%= link_to "All Photos", photos_path%></li>
+        <li<%if active_page('tags')%> class="active"<%end%>><%= link_to "All Tags", tags_path%></li>
+        <li<%if active_page('configuration')%> class="active"<%end%>><a href="#contact">Configuration</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">

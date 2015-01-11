@@ -3,7 +3,7 @@
    @post.date_to = @post.date_to.to_s.length > 0 ? @post.date_to.strftime('%d/%m/%Y') : ''
    @post.geo_latitude = @post.geo_latitude.present? ? @post.geo_latitude : 20
    @post.geo_longitude = @post.geo_longitude.present? ? @post.geo_longitude : 20
-   @tagsArr = @tagsArr.to_a.length > 0 ? @tagsArr : []
+   @tags_arr = @tags_arr.to_a.length > 0 ? @tags_arr : []
 %>
 <div class="form-wrapper">
     <%= form_for(@post, html: { class:'form-horizontal'}) do |f| %>
@@ -52,7 +52,7 @@
         <label class="col-sm-2 control-label">Tags:</label>
         <div class="col-sm-10">
           <textarea class="post-tags-editor" name="tags">
-            <%=@tagsArr.join(',')%>
+            <%=@tags_arr.join(',')%>
           </textarea>
         </div>
       </div>
@@ -69,6 +69,19 @@
             <%= f.hidden_field :geo_longitude, :class => 'gllpLongitude' %>
             <input type="hidden" class="gllpZoom" value="4"/>
           </fieldset>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Categories:</label>
+        <div class="col-sm-10">
+
+          <%CategoriesHelper::category_tree.each do |category|%>
+            <div class="category-level category-level-<%=category[:level]%>">
+              <input type="checkbox" name="category[<%=category[:id]%>]" id="category-id-<%=category[:id]%>"<%if (@category_active_ids.include?(category[:id])) %> checked="checked" <%end%>>
+              <label for="category-id-<%=category[:id]%>"><%=category[:title]%></label>
+            </div>
+          <%end%>
         </div>
       </div>
 

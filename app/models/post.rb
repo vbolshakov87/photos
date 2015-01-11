@@ -4,6 +4,7 @@ class Post < ActiveRecord::Base
   has_and_belongs_to_many :photos
   has_many :post_tag, class_name: PostTag
   has_many :posts_photos, class_name: PostPhoto
+  has_many :category_posts, class_name: CategoryPost
 
   #scope for post
   scope :byName, ->(name) {

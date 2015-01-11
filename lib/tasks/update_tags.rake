@@ -10,7 +10,8 @@ namespace :photo do
 
     @tags = Tag.all
     @tags.each do |tag|
-      countTags = PostTag.where("tag_id = ?", tag.id).count
+      countTagsCriteria = tag.for == Tag::TYPE_POST ? PostTag : PhotoTag
+      countTags = countTagsCriteria.where("tag_id = ?", tag.id).count
       tag[:count] = countTags
       if tag.save
         puts "\t Updated tag #{tag.title}, count=#{tag.count}"

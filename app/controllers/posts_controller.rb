@@ -25,10 +25,16 @@ class PostsController < ApplicationController
 
   # GET /posts/1/edit
   def edit
-    @tagsArr = Array.new
+    @tags_arr = Array.new
     @post.tags.each do |tag|
-      @tagsArr.push(tag.title)
+      @tags_arr.push(tag.title)
     end
+
+    @category_active_ids = Array.new
+    @post.category_posts.each do |cat_post|
+      @category_active_ids.push(cat_post.category_id)
+    end
+
   end
 
   # POST /posts
@@ -58,6 +64,7 @@ class PostsController < ApplicationController
 
         # save tags
         save_tags true
+        save_categories true
 
         format.html { redirect_to @post, notice: 'Post was successfully updated.' }
         format.json { render :show, status: :ok, location: @post }
@@ -83,17 +90,17 @@ class PostsController < ApplicationController
     term = params[:term]
     maxCount = !params[:maxCount].blank? && params[:maxCount].to_i > 1 ? params[:maxCount].to_i : 10
 
-    postCriteria = Post.limit(maxCount)
+    post_criteria = Post.limit(maxCount)
 
     if (term.empty?)
-      posts = postCriteria.all
+      posts = post_criteria.all
     else
-      posts = postCriteria.byName(term).all
+      posts = post_criteria.byName(term).all
     end
 
-    postTitleArr = Array.new
+    post_title_arr = Array.new
     posts.each do |post|
-      postTitleArr.push(
+      post_title_arr.push(
           {
               :label => post.title,
               :value => ApplicationHelper::Post.post_autocomplite_title(post),
@@ -101,7 +108,7 @@ class PostsController < ApplicationController
           }
       )
     end
-    render :json => postTitleArr
+    render :json => post_title_arr
   end
 
   private
@@ -119,24 +126,45 @@ class PostsController < ApplicationController
     end
 
     # save tags in create and update post
-    def save_tags(deleteOldTags = true)
+    def save_tags(delete_old_tags = true)
       #delete all old tags
-      if (deleteOldTags)
+      if (delete_old_tags)
         PostTag.delete_all(post_id: @post.id)
       end
       #save new tags
       if (params[:tags].length > 0)
-        @tags = params[:tags].split(',').uniq
-        @tags.each do |tagName|
+        tags = params[:tags].split(',').uniq
+        tags.each do |tagName|
           tagName = tagName.downcase.strip
-          @tag = Tag.find_or_initialize_by(title: tagName, for: Tag::TYPE_POST)
-          if (@tag.save)
+          tag = Tag.find_or_initialize_by(title: tagName, for: Tag::TYPE_POST)
+          if (tag.save)
             #save linked table
-            @postTag = PostTag.find_or_initialize_by(post_id: @post.id, tag_id: @tag.id)
-            @postTag.save
+            postTag = PostTag.create(post_id: @post.id, tag_id: tag.id)
+            postTag.save
           end
-          #save tags count
+        end
+      end
+    end
 
+
+    def save_categories(delete_old_categories = true)
+      #delete all old tags
+      if (delete_old_categories)
+        CategoryPost.delete_all(post_id: @post.id)
+      end
+      #save new categories
+      params[:category].keys.each do |cat_id|
+
+        category = Category.find(cat_id)
+        if (!category)
+          raise "Category #{cat_id} is not found"
+        end
+        #save linked table
+        category.path_ids.each do |path_cat_id|
+          categoryPost = CategoryPost.find_or_initialize_by(post_id: @post.id, category_id: path_cat_id)
+          if (!categoryPost.save)
+            raise "CategoryPost is not saved"
+          end
         end
       end
     end

@@ -1,0 +1,11 @@
+<p id="notice"><%= notice %></p>
+<h1>Listing catgories</h1>
+<%@categories.map do |category, sub_categories|%>
+  <%if (sub_categories.present? && sub_categories.empty? === false )%>
+      <ul>
+        <%sub_categories.each do |sub_category|%>
+            <%=render 'category', locals: { :category => sub_category[0]}%>
+        <%end%>
+      </ul>
+  <%end%>
+<%end%>

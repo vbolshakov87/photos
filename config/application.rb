@@ -21,10 +21,16 @@ module Photo2
     # config.i18n.default_locale = :de
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
+    config.autoload_paths << Rails.root.join('lib/photo')
     config.active_record.raise_in_transactional_callbacks = true
 
 
     config.flickr_key = '7ddd209f2b76befc1e854b5d34dc6bde'
     config.flickr_secret = '37c146eda5eac860'
+
+    config.default_geo_latitude = 20
+    config.default_geo_longitude = 20
+
+    config.exif_provider = 'exiftool'
   end
 end

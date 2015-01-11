@@ -58,3 +58,4 @@ gem "bcrypt-ruby", :require => "bcrypt"
 gem 'validates_email_format_of'
 gem "flickraw"
 gem 'rails-cache-tags'
+gem 'ancestry'

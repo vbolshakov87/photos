@@ -1,5 +1,9 @@
 module ApplicationHelper
 
+  def active_page(controller_name, action_name = false)
+    controller_name == params[:controller] && (action_name === false || action_name == params[:action])
+  end
+
   class Post
     def self.post_public_title(post, delimiter=',')
       post_title = post.title.to_s
@@ -26,7 +30,5 @@ module ApplicationHelper
       number.to_i/(1000*1000).round
     end
 
-
   end
-
 end
