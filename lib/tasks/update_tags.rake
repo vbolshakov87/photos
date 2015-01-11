@@ -8,8 +8,8 @@ namespace :photo do
   task update_tags_count: :environment do
     puts "Start update tags count"
 
-    @tags = Tag.all
-    @tags.each do |tag|
+    tags = Tag.all
+    tags.each do |tag|
       countTagsCriteria = tag.for == Tag::TYPE_POST ? PostTag : PhotoTag
       countTags = countTagsCriteria.where("tag_id = ?", tag.id).count
       tag[:count] = countTags
