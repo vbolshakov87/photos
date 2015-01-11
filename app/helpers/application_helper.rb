@@ -4,6 +4,10 @@ module ApplicationHelper
     controller_name == params[:controller] && (action_name === false || action_name == params[:action])
   end
 
+  def category_dropdown_options
+    CategoriesHelper::category_tree.collect {|p| [ ('- ' * (p[:level].to_i-1)).to_s + p[:title] + ' [' + p[:id].to_s + ']', p[:id] ] }
+  end
+
   class Post
     def self.post_public_title(post, delimiter=',')
       post_title = post.title.to_s

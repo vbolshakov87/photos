@@ -4,11 +4,11 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    getPostsWithFilter
+    get_posts_with_filter
   end
 
   def filter
-    getPostsWithFilter
+    get_posts_with_filter
     render partial: 'table_content', formats: :html
   end
 
@@ -44,7 +44,10 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
+
         save_tags false
+        save_categories false
+
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
         format.json { render :show, status: :created, location: @post }
       else
@@ -170,7 +173,7 @@ class PostsController < ApplicationController
     end
 
 
-    def getPostsWithFilter
+    def get_posts_with_filter
 
       postRecord = Post
 
@@ -189,10 +192,16 @@ class PostsController < ApplicationController
         postRecord = postRecord.byName(params[:filter][:name])
 
         # by tags
-        if (params[:filter].present? && params[:filter][:tags].present?)
+        if (params[:filter][:tags].present?)
           tags = params[:filter][:tags].split(',').uniq
           postRecord = postRecord.joins(:tags)
           postRecord = postRecord.where('tags.title IN (?)', tags)
+        end
+
+        # by category
+        if (params[:filter][:category].present?)
+          postRecord = postRecord.joins(:categories_posts)
+          postRecord = postRecord.where('categories_posts.category_id = ?', params[:filter][:category])
         end
 
         # by dates

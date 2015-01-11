@@ -1,6 +1,8 @@
 <%category = locals[:category]%>
 <li class="category-li">
   <h4 class="category-h4"><%= link_to category.title, category %></h4>
+  <span class="label label-success"><%=category.posts_count%> posts</span>
+  <span class="label label-info"><%=category.photos_count%> photos</span>
   <div class="btn-group" role="group" aria-label="...">
       <%= link_to 'Edit', edit_category_path(category), { :class=>'btn btn-xs btn-success' } %>
       <%= link_to 'Delete', category_delete_path(category), {:class => 'btn btn-xs btn-danger'} %>

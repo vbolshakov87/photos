@@ -52,10 +52,12 @@ $(function() {
         })
     });
 
-    $('#table-content').updatePostTable();
-    $('#photo-content').updatePostTable({
-        url: '/photos/filter/'
+    $('#table-content').updatePostTable({
+        url: '/posts/filter/'
     });
+//    $('#photo-content').updatePostTable({
+//        url: '/photos/filter/'
+//    });
 
     $('.btn-show-photos-ajax').click(function(e){
         e.preventDefault();
@@ -127,7 +129,8 @@ $(function() {
 
         // main function
         function updatePostTable(){
-            var $inputs = $('input', $form);
+
+            var $inputs = $('input, textarea, select', $form);
 
             var values = {};
             // filter

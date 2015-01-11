@@ -4,6 +4,7 @@
    @post.geo_latitude = @post.geo_latitude.present? ? @post.geo_latitude : 20
    @post.geo_longitude = @post.geo_longitude.present? ? @post.geo_longitude : 20
    @tags_arr = @tags_arr.to_a.length > 0 ? @tags_arr : []
+   @category_active_ids = @category_active_ids.to_a.length > 0 ? @category_active_ids : []
 %>
 <div class="form-wrapper">
     <%= form_for(@post, html: { class:'form-horizontal'}) do |f| %>
