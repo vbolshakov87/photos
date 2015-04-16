@@ -12,6 +12,32 @@ class PhotosController < ApplicationController
     render partial: 'photo_list', formats: :html
   end
 
+  def autocomplete
+    term = params[:term]
+    max_count = !params[:max_count].blank? && params[:max_count].to_i > 1 ? params[:max_count].to_i : 10
+
+    photo_criteria = Photo.limit(max_count)
+
+    if (term.empty?)
+      photos = photo_criteria.all
+    else
+      photos = photo_criteria.by_name(term).all
+    end
+
+    photo_title_arr = Array.new
+    photos.each do |photo|
+      photo_title_arr.push(
+          {
+              :label => photo.title,
+              :value => ApplicationHelper::Photo.post_autocomplete_title(post),
+              :id => post.id
+          }
+      )
+    end
+    render :json => photo_title_arr
+  end
+
+
   # GET /photos/1
   # GET /photos/1.json
   def show
@@ -56,21 +82,15 @@ class PhotosController < ApplicationController
     @post_arr = Array.new
 
     if (!@posts.empty?)
-
       tags = @photo.tags.any? ?  @photo.tags : @posts[0].tags
       tags.each do |tag|
         @tags_arr.push(tag.title)
       end
 
       @posts.each do |post|
-        @post_arr.push(ApplicationHelper::Post.post_autocomplite_title(post))
+        @post_arr.push(ApplicationHelper::Post.post_autocomplete_title(post))
       end
-
     end
-
-
-
-
 
     #default values
     @photo.geo_latitude = @photo.geo_latitude.present? ? @photo.geo_latitude : (@posts[0].present? ? @posts[0].geo_latitude : Rails.application.config.default_geo_latitude )
@@ -304,16 +324,16 @@ class PhotosController < ApplicationController
       end
 
       # paging
-      @perPage = 4
+      @per_page = 4
       if (cookies[:photo_per_page].present?)
-        @perPage = cookies[:photo_per_page];
+        @per_page = cookies[:photo_per_page];
       end
       if (params[:per_page].present? && params[:per_page].to_i > 0)
-        @perPage = params[:per_page].to_i;
+        @per_page = params[:per_page].to_i;
       end
-      cookies[:photo_per_page] = { :value => @perPage, :expires => 10.day.from_now }
+      cookies[:photo_per_page] = { :value => @per_page, :expires => 10.day.from_now }
 
-      @photos = photo_record.paginate(:page => params[:page], :per_page => @perPage)
+      @photos = photo_record.paginate(:page => params[:page], :per_page => @per_page)
     end
 
 

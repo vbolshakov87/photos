@@ -1,5 +1,11 @@
 class Photo < ActiveRecord::Base
 
+  RATING_MIN_500PX = 4
+  STATUS_TO_NOT_PUBLISH = 0
+  STATUS_TO_PUBLISH = 1
+  STATUS_PUBLISHED = 2
+
+
  # has_and_belongs_to_many :posts
   has_many :post_photo, class_name: PostPhoto, dependent: :destroy
   has_and_belongs_to_many :tags

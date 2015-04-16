@@ -11,7 +11,7 @@ class Tag < ActiveRecord::Base
 
 
   #scope for post
-  scope :searchByTag, ->(q) {
+  scope :search_by_tag, ->(q) {
     q = q.to_s.strip
     if (q.length > 0)
       where(["title like ?", "%#{q}%"])

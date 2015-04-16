@@ -1,0 +1,50 @@
+<%
+   now = Time.now.to_s
+   filterInput = {};
+   filterInput[:name] = params[:filter].present? ? params[:filter][:name] : ''
+   filterInput[:posts] = params[:filter].present? ? params[:filter][:posts] : ''
+   filterInput[:photos] = params[:filter].present? ? params[:filter][:photos] : ''
+%>
+<div><a class="to-toggle to-toggle-filter">Filter</a></div>
+<div class="form-wrapper col-sm-5 toggle-filter" style="padding-top: 15px;<%if !params[:filter].present?%> display: none;<%end%>">
+    <form class="form-horizontal" role="form" method="get" action="" id="post-filter-form">
+      <div class="form-group">
+        <label for="inputTitle" class="col-sm-3 control-label">Title</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="inputTitle" placeholder="title for search" name="filter[name]" value="<%=filterInput[:name]%>">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputPosts" class="col-sm-3 control-label">Posts</label>
+        <div class="col-sm-9">
+          <textarea class="tags-post-filter" name="filter[tags]" id="inputPosts">
+            <%=filterInput[:posts]%>
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputPhotos" class="col-sm-3 control-label">Photos</label>
+        <div class="col-sm-9">
+          <textarea class="tags-photos-filter" name="filter[tags]" id="inputPhotos">
+            <%=filterInput[:photos]%>
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputFor" class="col-sm-3 control-label">For</label>
+        <div class="col-sm-9">
+          <%= select_tag 'filter[for]', options_for_select(['photo', 'post'], filterInput[:for]), {:class => 'form-control', :id => 'inputFor'}%>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-4">
+          <button type="submit" class="btn btn-primary btn-lg" id="filter-post">Filter</button>
+        </div>
+      </div>
+    </form>
+</div>
+<div class="clearfix"></div>

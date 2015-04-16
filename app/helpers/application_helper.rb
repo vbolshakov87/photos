@@ -21,7 +21,7 @@ module ApplicationHelper
       return post_title
     end
 
-    def self.post_autocomplite_title(post)
+    def self.post_autocomplete_title(post)
       self.post_public_title(post, '(') + '<span class="post-id">'+post.id.to_s+'</span>)'
 
     end

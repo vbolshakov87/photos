@@ -17,7 +17,7 @@ default: &default
 
 development:
   <<: *default
-  socket: /Applications/MAMP/tmp/mysql/mysql.sock
+  socket: /tmp/mysql.sock
   # database: db/development.sqlite3
 
 # Warning: The database defined as "test" will be erased and

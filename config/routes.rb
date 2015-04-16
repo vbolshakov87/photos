@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get 'photos/filter', to: 'photos#filter', as: 'photos_filter'
+  get 'photos/autocomplete', to: 'photos#autocomplete', as: 'photos_autocomplete'
   resources :photos
   get 'photos/post-gallery-ajax/:post', to: 'photos#post_gallery_ajax', as: 'photos_post_gallery_ajax'
   get 'photos/forpost/:post', to: 'photos#forpost', as: 'photos_for_post'
@@ -9,11 +10,12 @@ Rails.application.routes.draw do
   post 'photos/sort/:post', to: 'photos#sort', as: 'photos_sort'
 
 
-  get 'tags/for-:essence', to: 'tags#autocomplite', as: 'tags_autocomplite'
+  get 'tags/for-:essence', to: 'tags#autocomplete', as: 'tags_autocomplete'
+  get 'tags/filter', to: 'tags#filter', as: 'tags_filter'
   resources :tags
 
   get 'posts/filter', to: 'posts#filter', as: 'posts_filter'
-  get 'posts/autocomplite', to: 'posts#autocomplite', as: 'posts_autocomplite'
+  get 'posts/autocomplete', to: 'posts#autocomplete', as: 'posts_autocomplete'
   resources :posts
 
   get 'log_out' => 'sessions#destroy', :as => 'log_out'

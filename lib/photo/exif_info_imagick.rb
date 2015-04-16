@@ -35,6 +35,7 @@ class ExifInfoImagick < ExifInfo
       'Contrast',
       'Filesize',
       'Mime type',
+      'Rating'
   ]
 
 
@@ -108,6 +109,8 @@ class ExifInfoImagick < ExifInfo
           self.output_data[:color_space] = exifRawHash['Colorspace'].to_i == 0 ? 'Normal' : exifRawHash['Colorspace']
         when :quantity
           self.output_data[:quantity] = exifRawHash['Quality']
+        when :rating
+          self.output_data[:rating] = exifRawHash['Rating'].to_i
       end
 
     end

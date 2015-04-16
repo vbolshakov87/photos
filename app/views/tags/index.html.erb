@@ -2,28 +2,9 @@
 
 <h1>Listing Tags</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Count</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<%= link_to 'New Tag', new_tag_path, {:class => 'btn btn-primary'} %>
 
-  <tbody>
-    <% @tags.each do |tag| %>
-      <tr>
-        <td><%= tag.title %></td>
-        <td><%= tag.count %></td>
-        <td><%= link_to 'Show', tag %></td>
-        <td><%= link_to 'Edit', edit_tag_path(tag) %></td>
-        <td><%= link_to 'Destroy', tag, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Tag', new_tag_path %>
+<%= render 'filter' %>
+<div id="tags-content">
+  <%= render 'table_content'%>
+</div>

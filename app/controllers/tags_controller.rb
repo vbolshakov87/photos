@@ -4,8 +4,14 @@ class TagsController < ApplicationController
   # GET /tags
   # GET /tags.json
   def index
-    @tags = Tag.all
+    get_tags_with_filter
   end
+
+  def filter
+    get_tags_with_filter
+    render partial: 'table_content', formats: :html
+  end
+
 
   # GET /tags/1
   # GET /tags/1.json
@@ -17,25 +23,25 @@ class TagsController < ApplicationController
     @tag = Tag.new
   end
 
-  def autocomplite
+  def autocomplete
     term = params[:term]
     essence = params[:essence]
-    maxCount = !params[:maxCount].blank? && params[:maxCount].to_i > 1 ? params[:maxCount].to_i : 10
+    max_count = !params[:max_count].blank? && params[:max_count].to_i > 1 ? params[:max_count].to_i : 10
 
-    tags_criteria = Tag.limit(maxCount)
+    tags_criteria = Tag.limit(max_count)
     tags_criteria = essence == Tag::TYPE_POST ? tags_criteria.from_post : tags_criteria.from_photo
 
     if (term.empty?)
       @tags = tags_criteria.all
     else
-      @tags = tags_criteria.searchByTag(term).all
+      @tags = tags_criteria.search_by_tag(term).all
     end
 
-    @tagTitleArr = Array.new
+    tags_titles = Array.new
     @tags.each do |tag|
-      @tagTitleArr.push(tag.title)
+      tags_titles.push(tag.title)
     end
-    render :json => @tagTitleArr
+    render :json => tags_titles
   end
 
 
@@ -95,4 +101,53 @@ class TagsController < ApplicationController
     def tag_params
       params.require(:tag).permit(:title, :count)
     end
+
+  def get_tags_with_filter
+
+    tags_record = Tag
+
+    @sort = {
+        :title => 'asc'
+    }
+    if (params[:sort].present?)
+      @sort = params[:sort]
+    end
+
+    if (params[:filter].present?)
+      #by name
+      tags_record = tags_record.search_by_tag(params[:filter][:name])
+
+      # by post
+      if (params[:filter][:posts].present?)
+        posts = params[:filter][:posts].split(',').uniq
+        tags_record = tags_record.joins(:posts)
+        tags_record = tags_record.where('posts.id IN (?)', posts)
+      end
+
+      # by photo
+      if (params[:filter][:photos].present?)
+        posts = params[:filter][:photos].split(',').uniq
+        tags_record = tags_record.joins(:photos)
+        tags_record = tags_record.where('photos.id IN (?)', photos)
+      end
+
+    end
+
+    @sort.each do |column,direction|
+      tags_record = tags_record.order(column.to_s + ' ' + direction.to_s)
+    end
+
+    # paging
+    @per_page = 1
+    if (cookies[:tags_per_page].present?)
+      @per_page = cookies[:tags_per_page];
+    end
+    if (params[:per_page].present? && params[:per_page].to_i > 0)
+      @per_page = params[:per_page].to_i;
+    end
+    cookies[:tags_per_page] = { :value => @per_page, :expires => 10.day.from_now }
+
+    @tags = tags_record.paginate(:page => params[:page], :per_page => @per_page)
+  end
+  
 end

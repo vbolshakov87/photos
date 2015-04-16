@@ -10,8 +10,7 @@ class CreateTableLinkPostTag < ActiveRecord::Migration
       KEY `fk_tag` (`tag_id`),
       CONSTRAINT `posts_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
       CONSTRAINT `posts_tags_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-    ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     SQL
   end
 end

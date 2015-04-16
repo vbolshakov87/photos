@@ -59,3 +59,5 @@ gem 'validates_email_format_of'
 gem "flickraw"
 gem 'rails-cache-tags'
 gem 'ancestry'
+gem 'less-rails', '~> 2.6.0'
+gem 'therubyracer'

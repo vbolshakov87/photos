@@ -1,0 +1,71 @@
+<table class="table table-condensed">
+  <thead>
+  <tr>
+    <th>
+      <a href="#"
+         data-by="id"
+         data-direction="<%=@sort[:id].present? ? @sort[:id] : 'empty'%>"
+         data-new-direction="<%if (!@sort[:id].present?)%>desc<%elsif @sort[:id] == 'asc'%>empty<%else%>asc<%end%>"
+         class="change-sort"
+      >
+        <span>#</span>
+        <span class="glyphicon <%if (!@sort[:id].present?)%>glyphicon-sort<%elsif @sort[:id] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+    <th>
+      <a href="#"
+         data-by="title"
+         data-direction="<%=@sort[:title].present? ? @sort[:title] : 'empty'%>"
+         data-new-direction="<%if (!@sort[:title].present?)%>asc<%elsif @sort[:title] == 'desc'%>empty<%else%>desc<%end%>"
+         class="change-sort"
+      >
+        <span>Title</span>
+        <span class="glyphicon <%if (!@sort[:title].present?)%>glyphicon-sort<%elsif @sort[:title] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+    <th>For</th>
+    <th>
+      <a href="#"
+         data-by="count_photos"
+         data-direction="<%=@sort[:count].present? ? @sort[:count] : 'empty'%>"
+         data-new-direction="<%if (!@sort[:count].present?)%>desc<%elsif @sort[:count] == 'asc'%>empty<%else%>asc<%end%>"
+         class="change-sort"
+      >
+        <span>Count</span>
+        <span class="glyphicon <%if (!@sort[:count].present?)%>glyphicon-sort<%elsif @sort[:count] == 'asc'%>glyphicon glyphicon-sort-by-alphabet<%else%>glyphicon glyphicon-sort-by-alphabet-alt<%end%>" aria-hidden="true"></span>
+      </a>
+    </th>
+
+    <th>Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @tags.each do |tag|%>
+      <tr>
+        <td><%= tag.id %></td>
+        <td><%= tag.title %></td>
+        <td><%= tag.for %></td>
+        <td><%=tag.count%></td>
+        <td>
+          <%= link_to 'Show', tag,  { :class=>'btn btn-sm btn-info' } %>
+          <%= link_to 'Edit', edit_tag_path(tag), { :class=>'btn btn-sm btn-success' } %>
+          <%= link_to 'Destroy', tag, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-sm btn-danger' %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= will_paginate @tags, renderer: BootstrapPagination::Rails, :id => true %>
+<div class="btn-group btn-group-per-page" role="group" data-per-page="<%=@per_page%>">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <%=@per_page%> items on page
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="#">1</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#">10</a></li>
+    <li><a href="#">100</a></li>
+  </ul>
+</div>

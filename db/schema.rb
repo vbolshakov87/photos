@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150107192853) do
+ActiveRecord::Schema.define(version: 20150416011552) do
 
   create_table "categories", force: true do |t|
     t.string   "title",        limit: 255,               null: false
@@ -46,19 +46,24 @@ ActiveRecord::Schema.define(version: 20150107192853) do
   end
 
   create_table "photos", force: true do |t|
-    t.string   "title",              limit: 255,   default: ""
+    t.string   "title",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "image_file_name",    limit: 255
-    t.string   "image_content_type", limit: 255
-    t.integer  "image_file_size",    limit: 4
+    t.string   "image_file_name",     limit: 255
+    t.string   "image_content_type",  limit: 255
+    t.integer  "image_file_size",     limit: 4
     t.datetime "image_updated_at"
-    t.integer  "sort",               limit: 4,     default: 100
-    t.text     "image_meta",         limit: 65535
-    t.float    "geo_latitude",       limit: 24
-    t.float    "geo_longitude",      limit: 24
-    t.text     "content",            limit: 65535
-    t.text     "exif",               limit: 65535
+    t.integer  "sort",                limit: 4,     default: 100
+    t.text     "image_meta",          limit: 65535
+    t.float    "geo_latitude",        limit: 24
+    t.float    "geo_longitude",       limit: 24
+    t.text     "content",             limit: 65535
+    t.text     "exif",                limit: 65535
+    t.integer  "rating",              limit: 1,     default: 0
+    t.integer  "publish_on_facebook", limit: 1,     default: 0
+    t.integer  "publish_on_twitter",  limit: 1,     default: 0
+    t.integer  "publish_on_flickr",   limit: 1,     default: 0
+    t.integer  "publish_on_500px",    limit: 1,     default: 0
   end
 
   create_table "photos_tags", force: true do |t|

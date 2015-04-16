@@ -49,9 +49,9 @@
 <div class="clearfix"></div>
 <% if ( (defined?(locals[:show_filter]) && locals[:show_filter] == true) || (defined?(@show_filter) && @show_filter == true) ) %>
 <%= will_paginate @photos, renderer: BootstrapPagination::Rails, :id => true %>
-<div class="btn-group btn-group-per-page" role="group" data-per-page="<%=@perPage%>">
+<div class="btn-group btn-group-per-page" role="group" data-per-page="<%=@per_page%>">
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    <%=@perPage%> items on page
+    <%=@per_page%> items on page
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" role="menu">

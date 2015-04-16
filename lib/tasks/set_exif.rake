@@ -13,7 +13,7 @@ namespace :photo do
 
       path = Rails.root + photo.image.path(:original)
 
-      if Rails.application.config.exif_provider === 'exiftool'
+     if Rails.application.config.exif_provider === 'exiftool'
         exifInfo =  ExifInfoExiftool.new(path)
       else
         exifInfo =  ExifInfoImagick.new(path)
@@ -22,6 +22,13 @@ namespace :photo do
       exifData = exifInfo.get_exif
 
       photo.exif = ActiveSupport::JSON.encode(exifData)
+      # if rating >= 4, the picture is automatically set to be published in social networks
+      if exifData[:rating].present? && exifData[:rating] >= Photo::RATING_MIN_500PX
+        photo.publish_on_500px = Photo::STATUS_TO_PUBLISH
+        photo.publish_on_facebook = Photo::STATUS_TO_PUBLISH
+        photo.publish_on_twitter = Photo::STATUS_TO_PUBLISH
+        photo.rating = exifData[:rating]
+      end
       if (photo.save)
         puts "\t Photo id=#{photo.id} exif is saved"
       end

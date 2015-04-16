@@ -34,6 +34,7 @@ class ExifInfoExiftool < ExifInfo
       'Image Size',
       'Lens ID',
       'Lens Profile Name',
+      'Rating'
   ]
 
 
@@ -45,6 +46,7 @@ class ExifInfoExiftool < ExifInfo
 
     exifRawHash = {}
     exifRaw = self.row_data.split("\n")
+
     exifRaw.each do |exifString|
       exif_arr = exifString.strip.split(': ').collect { |x| x.strip }
       if (@@EXIF_RELEVANT_DATA.include?(exif_arr[0]))
@@ -107,12 +109,13 @@ class ExifInfoExiftool < ExifInfo
           self.output_data[:color_space] = exifRawHash['Device Model']
         when :quantity
           self.output_data[:quantity] = 100
+        when :rating
+          self.output_data[:rating] = exifRawHash['Rating'].to_i
       end
 
     end
 
     self.output_data
-
   end
 
 end

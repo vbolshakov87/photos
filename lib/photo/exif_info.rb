@@ -49,7 +49,8 @@ class ExifInfo
       :saturation,
       :sharpness,
       :color_space,
-      :quantity
+      :quantity,
+      :rating
   ]
 
   def get_raw_exif(path)

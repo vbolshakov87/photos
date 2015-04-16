@@ -89,11 +89,11 @@ class PostsController < ApplicationController
   end
 
 
-  def autocomplite
+  def autocomplete
     term = params[:term]
-    maxCount = !params[:maxCount].blank? && params[:maxCount].to_i > 1 ? params[:maxCount].to_i : 10
+    max_count = !params[:max_count].blank? && params[:max_count].to_i > 1 ? params[:max_count].to_i : 10
 
-    post_criteria = Post.limit(maxCount)
+    post_criteria = Post.limit(max_count)
 
     if (term.empty?)
       posts = post_criteria.all
@@ -106,7 +106,7 @@ class PostsController < ApplicationController
       post_title_arr.push(
           {
               :label => post.title,
-              :value => ApplicationHelper::Post.post_autocomplite_title(post),
+              :value => ApplicationHelper::Post.post_autocomplete_title(post),
               :id => post.id
           }
       )
@@ -137,9 +137,9 @@ class PostsController < ApplicationController
       #save new tags
       if (params[:tags].length > 0)
         tags = params[:tags].split(',').uniq
-        tags.each do |tagName|
-          tagName = tagName.downcase.strip
-          tag = Tag.find_or_initialize_by(title: tagName, for: Tag::TYPE_POST)
+        tags.each do |tag_name|
+          tag_name = tag_name.downcase.strip
+          tag = Tag.find_or_initialize_by(title: tag_name, for: Tag::TYPE_POST)
           if (tag.save)
             #save linked table
             postTag = PostTag.create(post_id: @post.id, tag_id: tag.id)
@@ -156,17 +156,18 @@ class PostsController < ApplicationController
         CategoryPost.delete_all(post_id: @post.id)
       end
       #save new categories
-      params[:category].keys.each do |cat_id|
-
-        category = Category.find(cat_id)
-        if (!category)
-          raise "Category #{cat_id} is not found"
-        end
-        #save linked table
-        category.path_ids.each do |path_cat_id|
-          categoryPost = CategoryPost.find_or_initialize_by(post_id: @post.id, category_id: path_cat_id)
-          if (!categoryPost.save)
-            raise "CategoryPost is not saved"
+      if (params[:category].present? && params[:category].length > 0)
+        params[:category].keys.each do |cat_id|
+          category = Category.find(cat_id)
+          if (!category)
+            raise "Category #{cat_id} is not found"
+          end
+          #save linked table
+          category.path_ids.each do |path_cat_id|
+            categoryPost = CategoryPost.find_or_initialize_by(post_id: @post.id, category_id: path_cat_id)
+            if (!categoryPost.save)
+              raise "CategoryPost is not saved"
+            end
           end
         end
       end
@@ -175,7 +176,7 @@ class PostsController < ApplicationController
 
     def get_posts_with_filter
 
-      postRecord = Post
+      post_record = Post
 
       @sort = {
           :date_from => 'desc'
@@ -185,48 +186,48 @@ class PostsController < ApplicationController
       end
 
       #counts
-      postRecord = postRecord.select('posts.*, count(posts_photos.photo_id) as count_photos').joins('LEFT JOIN posts_photos ON posts_photos.post_id = posts.id').group('posts.id')
+      post_record = post_record.select('posts.*, count(posts_photos.photo_id) as count_photos').joins('LEFT JOIN posts_photos ON posts_photos.post_id = posts.id').group('posts.id')
 
       if (params[:filter].present?)
         #by name
-        postRecord = postRecord.by_name(params[:filter][:name])
+        post_record = post_record.by_name(params[:filter][:name])
 
         # by tags
         if (params[:filter][:tags].present?)
           tags = params[:filter][:tags].split(',').uniq
-          postRecord = postRecord.joins(:tags)
-          postRecord = postRecord.where('tags.title IN (?)', tags)
+          post_record = post_record.joins(:tags)
+          post_record = post_record.where('tags.title IN (?)', tags)
         end
 
         # by category
         if (params[:filter][:category].present?)
-          postRecord = postRecord.joins(:categories_posts)
-          postRecord = postRecord.where('categories_posts.category_id = ?', params[:filter][:category])
+          post_record = post_record.joins(:categories_posts)
+          post_record = post_record.where('categories_posts.category_id = ?', params[:filter][:category])
         end
 
         # by dates
         if (params[:filter][:date_from].to_s.length > 0)
-          postRecord = postRecord.where('posts.date_from >= ?',  DateTime.strptime(params[:filter][:date_from], '%d/%m/%Y'))
+          post_record = post_record.where('posts.date_from >= ?',  DateTime.strptime(params[:filter][:date_from], '%d/%m/%Y'))
         end
         if (params[:filter][:date_to].to_s.length > 0)
-          postRecord = postRecord.where('posts.date_to <= ?',  DateTime.strptime(params[:filter][:date_to], '%d/%m/%Y'))
+          post_record = post_record.where('posts.date_to <= ?',  DateTime.strptime(params[:filter][:date_to], '%d/%m/%Y'))
         end
       end
 
       @sort.each do |column,direction|
-        postRecord = postRecord.order(column.to_s + ' ' + direction.to_s)
+        post_record = post_record.order(column.to_s + ' ' + direction.to_s)
       end
 
       # paging
-      @perPage = 1
+      @per_page = 1
       if (cookies[:per_page].present?)
-        @perPage = cookies[:per_page];
+        @per_page = cookies[:per_page];
       end
       if (params[:per_page].present? && params[:per_page].to_i > 0)
-        @perPage = params[:per_page].to_i;
+        @per_page = params[:per_page].to_i;
       end
-      cookies[:per_page] = { :value => @perPage, :expires => 10.day.from_now }
+      cookies[:per_page] = { :value => @per_page, :expires => 10.day.from_now }
 
-      @posts = postRecord.paginate(:page => params[:page], :per_page => @perPage)
+      @posts = post_record.paginate(:page => params[:page], :per_page => @per_page)
     end
 end

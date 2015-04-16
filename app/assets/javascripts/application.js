@@ -37,6 +37,25 @@ $(function() {
         }
     });
 
+    $('.tags-post-filter').tagEditor({
+        autocomplete: {
+            source: '/posts/autocomplete',
+            minLength: 2,
+            delay: 0,
+            position: { collision: 'flip' }
+        }
+    });
+
+    $('.tags-photos-filter').tagEditor({
+        autocomplete: {
+            source: '/photos/autocomplete',
+            minLength: 2,
+            delay: 0,
+            position: { collision: 'flip' }
+        }
+    });
+
+
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy'
     });
@@ -51,9 +70,14 @@ $(function() {
     $('#table-content').updatePostTable({
         url: '/posts/filter/'
     });
+    $('#tags-content').updatePostTable({
+        url: '/tags/filter/'
+    });
     $('#photo-content').updatePostTable({
         url: '/photos/filter/'
-    }).on( 'click', '.photo-edit', function(e) {
+    });
+
+    $('.list-file-upload, #photo-content').on( 'click', '.photo-edit', function(e) {
         var $this = $(this);
         e.preventDefault();
         $.ajax({
