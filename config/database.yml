@@ -25,10 +25,10 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  username: photo
-  password: photophoto
- # database: db/test.sqlite3
 
 production:
   <<: *default
-# database: db/production.sqlite3
+  username: photo
+  password: photophoto
+  database: photo_db
+  socket: /var/run/mysqld/mysqld.sock
