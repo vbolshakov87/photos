@@ -63,3 +63,7 @@ gem 'less-rails', '~> 2.6.0'
 gem 'therubyracer'
 gem 'capistrano', '~> 3.4.0'
 gem 'capistrano-rails', '~> 1.1'
+
+group :assets do
+  gem 'turbo-sprockets-rails3'
+end
