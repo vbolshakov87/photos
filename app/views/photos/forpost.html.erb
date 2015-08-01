@@ -1,5 +1,4 @@
 <div class="container">
-    <%=Rails.root%>
   <h2>Upload file for post <strong><%=@post.title%></strong></h2>
   <%= form_for Photo.new, :html => { :multipart => true, :id => "fileupload"  } do |f| %>
       <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
