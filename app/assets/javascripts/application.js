@@ -20,6 +20,9 @@
 
 
 $(function() {
+
+    $('.main-block-content').css('min-height', $(window).height()-70);
+
     $('.post-tags-editor').tagEditor({
         autocomplete: {
             source: '/tags/for-post',
@@ -67,15 +70,20 @@ $(function() {
         })
     });
 
-    $('#table-content').updatePostTable({
-        url: '/posts/filter/'
-    });
-    $('#tags-content').updatePostTable({
-        url: '/tags/filter/'
-    });
-    $('#photo-content').updatePostTable({
-        url: '/photos/filter/'
-    });
+
+    if ($('#photo-content').length) {
+        $('#photo-content').updatePostTable({
+            url: '/photos/filter/'
+        });
+    } else {
+        $('#table-content').updatePostTable({
+            url: '/posts/filter/'
+        });
+        $('#tags-content').updatePostTable({
+            url: '/tags/filter/'
+        });
+    }
+
 
     $('.list-file-upload, #photo-content').on( 'click', '.photo-edit', function(e) {
         var $this = $(this);
@@ -118,6 +126,12 @@ $(function() {
         $('.toggle-filter').toggle();
     });
 
+    $('.show-view-type').click(function(){
+        var showType = $(this).data('type');
+        $('.show-view-type').toggleClass('active');
+        $('.thumbnail-list').removeClass('thumbnail-list-grid').removeClass('thumbnail-list-list').addClass('thumbnail-list-'+showType);
+    });
+
 });
 
 
@@ -139,7 +153,8 @@ $(function() {
                 title :     '.modal-title',
                 content :   '.modal-content'
             },
-            fotoramaClass : 'fotorama'
+            fotoramaClass : 'fotorama',
+            orderType : $('.show-order-type')
         }, opts);
 
         var $form = $('#'+config.formId);
@@ -180,6 +195,11 @@ $(function() {
 
             values['per_page'] = $(config.perPageWrapper).data('per-page');
 
+            if (config.orderType.length) {
+                values['photo_order_type'] = config.orderType.filter('.active').data('type')
+            }
+            console.log(values);
+
             $.ajax({
                 url: config.url,
                 data: values,
@@ -199,6 +219,13 @@ $(function() {
 
         $form.submit(function(e){
             e.preventDefault();
+            updatePostTable();
+        });
+
+        config.orderType.click(function(e){
+            e.preventDefault();
+            config.orderType.removeClass('active');
+            $(this).addClass('active');
             updatePostTable();
         });
 

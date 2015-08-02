@@ -172,7 +172,6 @@ class PhotosController < ApplicationController
 
   # GET /photos/1/edit
   def edit
-
   end
 
 
@@ -289,13 +288,6 @@ class PhotosController < ApplicationController
     def get_photos_with_filter
       photo_record = Photo
 
-      @sort = {
-          :created_at => 'desc'
-      }
-      if (params[:sort].present?)
-        @sort = params[:sort]
-      end
-
       #counts
       photo_record = photo_record.select('photos.*').joins('LEFT JOIN posts_photos ON posts_photos.photo_id = photos.id').joins('LEFT JOIN posts ON posts_photos.post_id = posts.id')
 
@@ -319,10 +311,6 @@ class PhotosController < ApplicationController
         end
       end
 
-      @sort.each do |column,direction|
-        photo_record = photo_record.order(column.to_s + ' ' + direction.to_s)
-      end
-
       # paging
       @per_page = 4
       if (cookies[:photo_per_page].present?)
@@ -333,6 +321,24 @@ class PhotosController < ApplicationController
       end
       cookies[:photo_per_page] = { :value => @per_page, :expires => 10.day.from_now }
 
+      # order_type
+      @order_type = 'date'
+      available_order_types = ['date', 'post']
+      if (cookies[:photo_order_type].present? && (available_order_types.include? cookies[:photo_order_type]))
+        @order_type = cookies[:photo_order_type];
+      end
+      if (params[:photo_order_type].present? && (available_order_types.include? cookies[:photo_order_type]))
+        @order_type = params[:photo_order_type];
+      end
+      cookies[:photo_order_type] = { :value => @order_type, :expires => 10.day.from_now }
+
+      if (@order_type == 'date')
+        photo_record = photo_record.order('photos.created_at DESC')
+      else
+        photo_record = photo_record.order('posts.created_at DESC')
+      end
+
+      # get data
       @photos = photo_record.paginate(:page => params[:page], :per_page => @per_page)
     end
 
@@ -368,4 +374,23 @@ class PhotosController < ApplicationController
         end
       end
     end
+
+
+    # set special params for the layout
+    def set_layout_data
+      @layout_type = 'preview'
+
+      # view_type
+      available_view_types = ['grid', 'list']
+      @view_type = 'grid'
+      if (cookies[:photo_list_view_type].present? && (available_view_types.include? cookies[:photo_list_view_type]))
+        @view_type = cookies[:photo_list_view_type];
+      end
+
+      if (params[:photo_list_view_type].present? && (available_view_types.include? params[:photo_list_view_type]))
+        @view_type = params[:photo_list_view_type];
+      end
+      cookies[:photo_list_view_type] = { :value => @view_type, :expires => 10.day.from_now }
+    end
+
 end
