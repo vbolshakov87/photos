@@ -28,7 +28,7 @@ test:
 
 production:
   <<: *default
-  username: photo
-  password: photophoto
-  database: photo_db
-  socket: /var/run/mysqld/mysqld.sock
+#  username: photo
+#  password: photophoto
+#  database: photo_db
+#  socket: /var/run/mysqld/mysqld.sock
